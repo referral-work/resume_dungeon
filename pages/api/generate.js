@@ -27,6 +27,7 @@ export default async function (req, res) {
   }
 
   try {
+    console.log("amit")
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
       prompt: generatePrompt(animal),
@@ -51,6 +52,6 @@ export default async function (req, res) {
 }
 
 function generatePrompt(animal) {
-  const capitalizedAnimal = animal.slice(1).toLowerCase() + "parse the entire resume in a json format with education, skills, projects, contact details and achivements";
+  const capitalizedAnimal = animal.slice(1).toLowerCase();
   return capitalizedAnimal
 }

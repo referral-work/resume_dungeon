@@ -25,17 +25,44 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(4),
     whiteSpace: 'pre-wrap',
   },
+  inputContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginTop: theme.spacing(4),
+    width: '50%', // Default width for laptop screens
+
+    [theme.breakpoints.up('md')]: {
+      // Adjust width to 90% for PC screens and larger
+      width: '90%',
+    },
+  },
+  input: {
+    width: '100%', // To make the input fill the container width
+    height: '150px',
+    padding: '10px',
+    fontSize: '16px',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+    marginBottom: theme.spacing(2),
+  },
 }));
 
 export default function Home() {
   const [file, setFile] = useState(null);
   const [result, setResult] = useState('');
   const [requestText, setRequesText] = useState('');
+  const [promptText, setPromptText] = useState(''); 
   const classes = useStyles();
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
     setFile(selectedFile);
+  };
+
+  const handlePromptChange = (event) => {
+    console.log("value")
+    setPromptText(event.target.value);
   };
 
   const handleUpload = () => {
@@ -99,7 +126,7 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ amit: content }),
+        body: JSON.stringify({ amit: content + " " + promptText }),
       });
 
       const data = await response.json();
@@ -136,6 +163,17 @@ export default function Home() {
           Upload File
         </Button>
       </label>
+      <div className={classes.inputContainer}>
+        <label htmlFor="text-input">Prompt:</label>
+        <input
+          type="text"
+          id="text-input"
+          value={promptText}
+          onChange={handlePromptChange}
+          className={classes.input}
+          placeholder="Type your prompt here..."
+        />
+      </div>
       <Button
         variant="contained"
         color="primary"
