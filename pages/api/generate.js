@@ -27,7 +27,6 @@ export default async function (req, res) {
   }
 
   try {
-    console.log("amit")
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
       prompt: generatePrompt(animal),

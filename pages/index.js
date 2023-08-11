@@ -24,6 +24,11 @@ const useStyles = makeStyles((theme) => ({
   result: {
     marginTop: theme.spacing(4),
     whiteSpace: 'pre-wrap',
+    width: "90%",
+    marginLeft: "auto",
+    marginRight: "auto",
+    padding: 10,
+    border: '2px solid rgba(0, 0, 0, 0.05)' 
   },
   inputContainer: {
     display: 'flex',
@@ -46,6 +51,9 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '4px',
     marginBottom: theme.spacing(2),
   },
+  input1: {
+    display: "none"
+  }
 }));
 
 export default function Home() {
@@ -61,7 +69,6 @@ export default function Home() {
   };
 
   const handlePromptChange = (event) => {
-    console.log("value")
     setPromptText(event.target.value);
   };
 
@@ -147,7 +154,7 @@ export default function Home() {
     <div className={classes.root}>
       <input
         accept=".pdf,.docx"
-        className={classes.input}
+        className={classes.input1}
         id="file-upload"
         type="file"
         onChange={handleFileChange}
@@ -181,11 +188,11 @@ export default function Home() {
         onClick={handleUpload}
         disabled={!file}
       >
-        Extract Text
+        GENERATE
       </Button>
       {result && (
         <div className={classes.result}>
-          <h3>Extracted Text:</h3>
+          <h3>GPT Output</h3>
           <pre>{result}</pre>
         </div>
       )}
