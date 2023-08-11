@@ -28,7 +28,8 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: "auto",
     marginRight: "auto",
     padding: 10,
-    border: '2px solid rgba(0, 0, 0, 0.05)' 
+    border: '2px solid rgba(0, 0, 0, 0.05)',
+    overflowX: "scroll"
   },
   inputContainer: {
     display: 'flex',
