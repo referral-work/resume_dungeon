@@ -196,7 +196,7 @@ export default function Home() {
       </Button>
       {result && (
         <div className={classes.result}>
-          <h3>GPT Output</h3>
+          <h3>Jina Output</h3>
           <pre>{result}</pre>
         </div>
       )}
