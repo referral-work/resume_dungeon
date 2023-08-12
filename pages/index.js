@@ -29,7 +29,8 @@ const useStyles = makeStyles((theme) => ({
     marginRight: "auto",
     padding: 10,
     border: '2px solid rgba(0, 0, 0, 0.05)',
-    overflowX: "scroll"
+    overflowX: "scroll",
+    fontSize:"16px"
   },
   inputContainer: {
     display: 'flex',
@@ -45,12 +46,14 @@ const useStyles = makeStyles((theme) => ({
   },
   input: {
     width: '100%', // To make the input fill the container width
-    height: '150px',
+    height: 'auto',
+    minHeight:"400px",
     padding: '10px',
     fontSize: '16px',
     border: '1px solid #ccc',
     borderRadius: '4px',
     marginBottom: theme.spacing(2),
+    wordWrap: "break-word"
   },
   input1: {
     display: "none"
@@ -128,13 +131,13 @@ export default function Home() {
 
   async function ProcessText(content){
     try {
-      console.log("requestText: ",requestText)
+     // console.log("requestText: ",requestText)
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ amit: content + " " + promptText }),
+        body: JSON.stringify({ amit: content + ". " + promptText }),
       });
 
       const data = await response.json();
@@ -173,7 +176,7 @@ export default function Home() {
       </label>
       <div className={classes.inputContainer}>
         <label htmlFor="text-input">Prompt:</label>
-        <input
+        <textarea
           type="text"
           id="text-input"
           value={promptText}
