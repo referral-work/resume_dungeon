@@ -1,0 +1,2 @@
+export const UPGRADED_MAX_PROMPT_COUNT = 6;
+export const INITIAL_MAX_PROMPT_COUNT = 2;
