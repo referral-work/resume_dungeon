@@ -21,11 +21,14 @@ export class UsersController {
     const coupon_code = data.coupon_code
     const email = data.email
 
+    // check for existing user
+    const existingIUser = await this.usersService.findUserByEmail(email)
+
     if(coupon_code != null){
       // check if coupon_code is valid
       // if valid, update maxPromptCount for coupon provider and return true
       // if invalid, return false
-      const isCouponValid = await this.usersService.isValidCouponCode(coupon_code);
+      const isCouponValid = await this.usersService.isValidCouponCode(coupon_code, existingIUser);
 
       if(!isCouponValid) {
         return res.status(400).json({msg: "Coupon code is invalid or expired!"})
@@ -37,7 +40,7 @@ export class UsersController {
     // if(!isIPValid) {
     //   return res.status(400).json({msg: "Same IP cannot be used for multiple accounts"})
     // }
-    const existingIUser = await this.usersService.findUserByEmail(email)
+    
     var iuser = null
     if(existingIUser == null || existingIUser == undefined){
       iuser = await this.usersService.saveUser(email, ip)
@@ -53,7 +56,8 @@ export class UsersController {
       existingIUser.ip = ip
       iuser = await this.usersService.updateUser(existingIUser)
     }
-    return res.status(200).json({maxPromptCount: iuser.currentMaxPromptCount, usedPromptCount: iuser.currentPromptCount})
+
+    return res.status(200).json({maxPromptCount: iuser.currentMaxPromptCount, usedPromptCount: iuser.currentPromptCount, couponCode: iuser.couponCode})
    }
 
    // validate user
@@ -99,6 +103,6 @@ export class UsersController {
     existingIUser.currentPromptCount = existingIUser.currentPromptCount + 1
     existingIUser.resume = resumeText
     await this.usersService.updateUser(existingIUser)
-    return res.status(200).json({responseText: output.output, currentPromptCount: existingIUser.currentPromptCount, curruentMaxPromptCount: existingIUser.currentMaxPromptCount})
+    return res.status(200).json({responseText: output.output, currentPromptCount: existingIUser.currentPromptCount, curruentMaxPromptCount: existingIUser.currentMaxPromptCount, couponCode: existingIUser.couponCode})
    }
 }

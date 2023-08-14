@@ -9,7 +9,7 @@ export class UsersService {
     
     constructor(@InjectModel('iuser') private readonly iuserModel: Model<IUser>){}
     
-    async isValidCouponCode(coupon_code: string): Promise<boolean> {
+    async isValidCouponCode(coupon_code: string, existingIUser: any): Promise<boolean> {
         const iuser = await this.iuserModel.findOne(
             {
                 couponCode: coupon_code
@@ -17,8 +17,12 @@ export class UsersService {
         if(iuser == null || iuser == undefined){
             return false
         }
-
         else if(iuser.couponUsed == true){
+            return false
+        }
+
+        // if user exists, coupon code cannot be applied
+        if(existingIUser != null){
             return false
         }
         iuser.couponUsed = true
@@ -51,7 +55,7 @@ export class UsersService {
         const newIUser = new this.iuserModel({
             email: email,
             ip: ip,
-
+            couponCode: this.generateCouponCode()
         })
         return await this.iuserModel.create(newIUser)
     }
@@ -89,5 +93,25 @@ export class UsersService {
     async isPromptLimitReached(email: string): Promise<boolean> {
         
         return false
+    }
+
+    generateCouponCode(): string {
+        const uppercaseLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const numbers = '0123456789';
+
+        let randomString = '';
+        
+        // Add a random uppercase letter as the first character
+        randomString += uppercaseLetters.charAt(Math.floor(Math.random() * uppercaseLetters.length));
+
+        // Add random characters from uppercase letters and numbers
+        const possibleCharacters = uppercaseLetters + numbers;
+        const length = 6;
+
+        for (let i = 1; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * possibleCharacters.length);
+            randomString += possibleCharacters.charAt(randomIndex);
+        }
+        return randomString;
     }
 }
