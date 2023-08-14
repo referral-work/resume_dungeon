@@ -42,6 +42,14 @@ export class UsersController {
     if(existingIUser == null || existingIUser == undefined){
       iuser = await this.usersService.saveUser(email, ip)
     } else {
+     
+      // check if limit needs to be renewed
+      const isLimitRenewalValid = this.usersService.isLimitRenewalValid(existingIUser)
+
+      if(isLimitRenewalValid) {
+        console.log("renewing limit...")
+        existingIUser.currentPromptCount = 0
+      }
       existingIUser.ip = ip
       iuser = await this.usersService.updateUser(existingIUser)
     }
