@@ -103,6 +103,32 @@ export class UsersController {
     existingIUser.currentPromptCount = existingIUser.currentPromptCount + 1
     existingIUser.resume = resumeText
     await this.usersService.updateUser(existingIUser)
-    return res.status(200).json({responseText: output.output, currentPromptCount: existingIUser.currentPromptCount, curruentMaxPromptCount: existingIUser.currentMaxPromptCount, couponCode: existingIUser.couponCode})
+    return res.status(200).json({responseText: output.output, currentPromptCount: existingIUser.currentPromptCount, currentMaxPromptCount: existingIUser.currentMaxPromptCount, couponCode: existingIUser.couponCode})
+   }
+
+   // validate user
+   @Post('details')
+   async getUserDetails(
+     @Body('data') data: any,
+     @Req() req: Request,
+     @Res() res: Response
+   ) {
+    const email = data.email
+
+    let existingIUser = await this.usersService.findUserByEmail(email)
+    if(existingIUser == null || existingIUser == undefined) {
+      return res.status(404).json({msg: "requesting resource with wrong email"})
+    }
+
+    // check if limit needs to be renewed
+    const isLimitRenewalValid = this.usersService.isLimitRenewalValid(existingIUser)
+
+    if(isLimitRenewalValid) {
+      console.log("renewing limit...")
+      existingIUser.currentPromptCount = 0
+      await this.usersService.updateUser(existingIUser)
+    }
+    
+    return res.status(200).json({currentPromptCount: existingIUser.currentPromptCount, currentMaxPromptCount: existingIUser.currentMaxPromptCount, couponCode: existingIUser.couponCode})
    }
 }
