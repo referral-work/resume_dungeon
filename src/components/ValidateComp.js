@@ -4,7 +4,7 @@ import axios from 'axios';
 import { CircularProgress } from '@material-ui/core';
 import { useGoogleLogout } from 'react-google-login';
 
-const clientId = "659883495947-fq1mts0flqj8f69hr6bsfjihbrgvco0l.apps.googleusercontent.com"
+const clientId = process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID
 
 const ValidateComp = () => {
     const location = useLocation()

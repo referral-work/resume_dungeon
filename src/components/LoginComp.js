@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from "react";
 import { makeStyles } from '@mui/styles';
 
-const clientId = "659883495947-fq1mts0flqj8f69hr6bsfjihbrgvco0l.apps.googleusercontent.com"
+const clientId = process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID
 
 const useStyles = makeStyles((theme) => ({
     root: {
