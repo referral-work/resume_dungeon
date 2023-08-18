@@ -1,6 +1,4 @@
-import { useState, useEffect } from 'react'
-import { gapi } from "gapi-script";
-import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import Login from './pages/Login';
 import Demo from './pages/Demo';
 import ValidateComp from './components/ValidateComp';

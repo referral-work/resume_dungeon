@@ -4,7 +4,8 @@ import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { options } from '../data/options';
 import { pdfjs } from "react-pdf";
-import { CircularProgress } from '@material-ui/core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -13,7 +14,6 @@ const Demo = () => {
   const navigate = useNavigate()
   const [file, setFile] = useState(null);
   const [promptText, setPromptText] = useState("");
-  const [responseText, setResponseText] = useState("");
   const [requestText, setRequesText] = useState("");
   const [keyword, setKeyWord] = useState("");
   const [resGPT, setGPT] = useState([]);
@@ -24,6 +24,8 @@ const Demo = () => {
   const [currentPromptLimitCount, setCurrentPromptLimitCount] = useState(0);
   const [couponCode, setCouponCode] = useState('')
   const [isDailyLimitReached, setIsDailyLimitReached] = useState(false)
+  const [selectedFileName, setSelectedFileName] = useState('');
+  const [dots, setDots] = useState('');
   const data = location.state;
 
   useEffect(() => {
@@ -61,6 +63,7 @@ const Demo = () => {
       if (isExtracted && promptText) {
         if(usedPromptCount !== currentPromptLimitCount){
           setIsLoading(true);
+          
           const reqBody = {
             data: {
               email: data.data.email,
@@ -82,6 +85,7 @@ const Demo = () => {
               setCurrentPromptLimitCount(response.data.currentMaxPromptCount)
               setUsedPromptCount(response.data.currentPromptCount)
               setCouponCode(response.data.couponCode)
+      
               if(response.data.currentMaxPromptCount === response.data.currentPromptCount) {
                 setIsDailyLimitReached(true)
               } else {
@@ -100,6 +104,23 @@ const Demo = () => {
     handleOPENAIAPI();
   }, [keyword]);
 
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setDots((prevDots) => (prevDots.length < 3 ? prevDots + '.' : ''));
+    }, 500); 
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
+    const targetElement = document.querySelector('.promptResult');
+    if (!isLoading && targetElement) {
+      targetElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  }, [isLoading])
 
   const extractTextFromPDF = async (content) => {
     try {
@@ -129,14 +150,16 @@ const Demo = () => {
 
   const handleFile = (e) => {
     let fileData = e.target.files[0];
-
-    if (fileData && fileData.type === "application/pdf") {
+  
+    if (fileData && (fileData.type === "application/pdf" || fileData.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
       setFile((prev) => fileData);
       const reader = new FileReader();
       reader.onload = handleFileRead;
       reader.readAsArrayBuffer(fileData);
+      setSelectedFileName(fileData.name);
     } else {
-      alert("Please select .pdf file");
+      alert("Please select .pdf or .docx file");
+      e.target.value = null; 
       return;
     }
   };
@@ -154,6 +177,18 @@ const Demo = () => {
   function promptErrorMessage(msg){
     alert(msg)
   }
+
+  const handleMouseEnter = (e) => {
+    if (!isDisable && !isDailyLimitReached) {
+      e.target.style.color = "blue";
+    }
+  };
+  
+  const handleMouseLeave = (e) => {
+    if (!isDisable && !isDailyLimitReached) {
+      e.target.style.color = "#000";
+    }
+  };
 
   return (
     <div>
@@ -251,17 +286,42 @@ const Demo = () => {
               justifyContent: "flex-end",
             }}
           >
-            <input
-              type="file"
-              style={{
-                padding: 16,
-                background: "#8c84fa",
-                borderRadius: 4,
-              }}
-              disabled={isDailyLimitReached}
-              onChange={handleFile}
-            />
-
+            <div style={{ position: "relative", display: "inline-block" }}>
+              <input
+                type="file"
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  opacity: 0,
+                  width: "100%",
+                  height: "100%",
+                  cursor: "pointer",
+                }}
+                accept=".pdf,.docx"
+                disabled={isDailyLimitReached}
+                onChange={handleFile}
+              />
+              <div
+                style={{
+                  padding: 16,
+                  background: "#8c84fa",
+                  borderRadius: 4,
+                  color: "white",
+                  display: "inline-block",
+                  cursor: "pointer",
+                  fontWeight: 600,
+                  width: 220,
+                  textAlign: 'center',
+                  fontSize:20
+                }}
+              >
+                <FontAwesomeIcon icon={faFileUpload}/> &nbsp;&nbsp;UPLOAD FILE
+              </div>
+            </div>
+            {selectedFileName && (
+                  <p style={{ fontSize: 14, marginTop: 8 }}>{selectedFileName}</p>
+                )}
             <div
               style={{
                 marginTop: 10,
@@ -292,9 +352,11 @@ const Demo = () => {
               }}
             >
               {options.map((val, index) => (
-                <input
+                <button
+                  key={index}
                   style={{
-                    padding: 16,
+                    paddingTop: 15,
+                    paddingBottom: 15,
                     border: "1px solid black",
                     borderRadius: 16,
                     background: "#fff",
@@ -302,23 +364,35 @@ const Demo = () => {
                     cursor: "pointer",
                     margin: 4,
                     fontSize: 16,
+                    marginBottom: 20,
                   }}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
                   disabled={isDisable || isDailyLimitReached}
                   value={val}
                   onClick={() => {
                     setPromptText(val);
                     setKeyWord(val + ". " + requestText);
                   }}
-                />
+                >
+                  {val}
+                </button>
               ))}
+
             </div>
           </div>
         </div>
         {isLoading && <div style={{
-          textAlign: 'center',
-          margin: 16,
+          marginTop: 60,
+          fontWeight: 500,
+          fontSize: 20,
+          width: 400,
+          marginLeft: 'auto',
+          marginRight: 'auto'
         }}>
-          <CircularProgress size={32} color='white' style={{marginTop:40}}/>
+          <div>
+            AI is analyzing your resume{dots}
+          </div>
         </div>}
         {!isLoading && resGPT.length > 0 && (
           <div
@@ -326,21 +400,24 @@ const Demo = () => {
               color: "#fff",
               background: "#087566",
               padding: 32,
-              marginTop: 40
+              marginTop: 20
             }}
           >
-            <div style={{textAlign: 'center', fontSize: 24, fontWeight:500}}>Results for Prompt</div>
+            <div className="promptResult" style={{textAlign: 'center', fontSize: 24, fontWeight:500}}>Results for Prompt</div>
             <div
               style={{
                 fontSize: '1.2rem',
                 width: '80%',
                 marginLeft: 'auto',
                 marginRight: 'auto',
-                marginTop: 50
+                marginTop: 30,
+                backgroundColor: '#283732',
+                borderRadius: 10,
+                padding: 30
               }}
             >
                {resGPT.map((line, index) => (
-                <div style={{marginTop: 10}} key={index}>{line}</div>
+                <div style={{marginTop: 10, lineHeight: 1.3}} key={index}>{line}</div>
               ))}
             </div>
           </div>
