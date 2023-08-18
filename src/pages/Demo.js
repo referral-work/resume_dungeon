@@ -6,8 +6,46 @@ import { options } from '../data/options';
 import { pdfjs } from "react-pdf";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
+import { makeStyles } from '@material-ui/core';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    flexDirection: "row",
+    flexWrap: "wrap",
+
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column",
+    },
+  },
+  promptSelectionContainer: {
+    width: "40%",
+
+    [theme.breakpoints.down("sm")]: {
+      width: "90%",
+    },
+  },
+  outputContainer: {
+    fontSize: '16px',
+    width: '90%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 30,
+    backgroundColor: '#283732',
+    borderRadius: 10,
+    padding: 30,
+
+    [theme.breakpoints.down("sm")]: {
+      width: "75%",
+      padding: 20
+    }
+  }
+}));
 
 const Demo = () => {
   const location = useLocation()
@@ -26,6 +64,7 @@ const Demo = () => {
   const [isDailyLimitReached, setIsDailyLimitReached] = useState(false)
   const [selectedFileName, setSelectedFileName] = useState('');
   const [dots, setDots] = useState('');
+  const classes = useStyles();
   const data = location.state;
 
   useEffect(() => {
@@ -198,6 +237,7 @@ const Demo = () => {
           height: "100vh",
           background: "#087566",
           color: "#fff",
+          paddingBottom: 30
         }}
       >
         <div
@@ -271,12 +311,7 @@ const Demo = () => {
           >You have used you daily limit of {currentPromptLimitCount} prompts</div>}
         </div>
         <div
-          style={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-evenly",
-          }}
+          className={classes.container}
         >
           <div
             style={{
@@ -333,9 +368,7 @@ const Demo = () => {
             <h1>and</h1>
           </div>
           <div
-            style={{
-              width: "40%",
-            }}
+            className={classes.promptSelectionContainer}
           >
             <p
               style={{
@@ -355,8 +388,7 @@ const Demo = () => {
                 <button
                   key={index}
                   style={{
-                    paddingTop: 15,
-                    paddingBottom: 15,
+                    padding: 15,
                     border: "1px solid black",
                     borderRadius: 16,
                     background: "#fff",
@@ -386,7 +418,7 @@ const Demo = () => {
           marginTop: 60,
           fontWeight: 500,
           fontSize: 20,
-          width: 400,
+          textAlign: 'center',
           marginLeft: 'auto',
           marginRight: 'auto'
         }}>
@@ -399,22 +431,12 @@ const Demo = () => {
             style={{
               color: "#fff",
               background: "#087566",
-              padding: 32,
               marginTop: 20
             }}
           >
             <div className="promptResult" style={{textAlign: 'center', fontSize: 24, fontWeight:500}}>Results for Prompt</div>
             <div
-              style={{
-                fontSize: '1.2rem',
-                width: '80%',
-                marginLeft: 'auto',
-                marginRight: 'auto',
-                marginTop: 30,
-                backgroundColor: '#283732',
-                borderRadius: 10,
-                padding: 30
-              }}
+              className={classes.outputContainer}
             >
                {resGPT.map((line, index) => (
                 <div style={{marginTop: 10, lineHeight: 1.3}} key={index}>{line}</div>
