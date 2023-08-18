@@ -1,17 +1,16 @@
-import { GoogleLogout } from "react-google-login";
+import { googleLogout } from "@react-oauth/google";
 import { useNavigate } from 'react-router-dom';
-
-const clientId = process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID
 
 const LogoutComp = () => {
     const navigate = useNavigate();
-    const onSuccess = () => {
-        console.log('Log out Successfull!!');
+    const logout = () => {
+        googleLogout()
+        localStorage.removeItem('google-access-token')
         navigate('/login');
     }
     return (
-        <div>
-            <GoogleLogout clientId={clientId} buttonText='LogOut' onLogoutSuccess={onSuccess} />
+        <div style={{fontWeight: 500, cursor: 'pointer', fontSize: 18, padding: 10, backgroundColor: 'rgba(32, 153, 225, 0.76)', borderRadius: 10}} onClick={logout}>
+            Logout
         </div>
     )
 }

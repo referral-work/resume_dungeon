@@ -1,9 +1,8 @@
-import GoogleLogin from 'react-google-login'
+import { useGoogleLogin } from '@react-oauth/google';
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from "react";
 import { makeStyles } from '@mui/styles';
-
-const clientId = process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -47,13 +46,22 @@ const useStyles = makeStyles((theme) => ({
         display: 'block',
         marginLeft: 'auto',
         marginRight: 'auto',
-        marginTop: '20px'
+        marginTop: '20px',
+        cursor: 'pointer',
+        paddingTop: 10,
+        paddingBottom: 10,
+        backgroundColor: '#2050e1',
+        color: 'white',
+        fontWeight: 500,
+        fontSize: 16,
+        border: 'none',
+        borderRadius: 10
     },
     inputLabel: {
         width: "270px",
         marginLeft: 'auto',
         marginRight: 'auto',
-        color: 'gray',
+        color: '#625757',
         fontFamily: 'Roboto, sans-serif'
     },
     errorBlock: {
@@ -73,22 +81,42 @@ const LoginComp = () => {
     const navigate = useNavigate();
     const location = useLocation()
     const data = location.state
-    const onSuccess = (res) => {
-        if (res.profileObj) {
-            localStorage.setItem("google-access-token", res.accessToken)
-            console.log("LOGIN Success!", res.profileObj?.email);
-            navigate(`/validate?email=${res.profileObj?.email}&coupon=${coupon}`);
-        }
+
+    function navigateToValidate(data) {
+        navigate(`/validate?email=${data.email}&coupon=${coupon}`);
     }
-    
-    const onFailure = (res) => {
-        console.log("Login Failed!", res);
+
+    function fetchGoogleProfile(access_token) {
+        axios
+            .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${access_token}`, {
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                    Accept: 'application/json'
+                }
+            })
+            .then((res) => {
+                navigateToValidate(res.data)
+            })
+            .catch((err) => console.log(err));
     }
+
+    const login = useGoogleLogin({
+        onSuccess: (codeResponse) => {
+            localStorage.setItem("google-access-token", codeResponse.access_token)
+            fetchGoogleProfile(codeResponse.access_token)
+        },
+        onError: (error) => console.log('Login Failed:', error)
+    });
 
     useEffect(()=>{
         if(data != null) {
             setCoupon(data.data.prevCouponCode)
             setIsError(data.data.isError)
+            localStorage.removeItem('google-access-token')
+        }
+        const userAccessToken = localStorage.getItem('google-access-token')
+        if(userAccessToken !== null && userAccessToken !== undefined) {
+            fetchGoogleProfile(userAccessToken)
         }
     }, [])
     return (
@@ -103,7 +131,9 @@ const LoginComp = () => {
                     <div className={classes.inputLabel}>Coupon Code (Optional)</div>
                     <input className={classes.couponInput} value={coupon} onChange={(e) => setCoupon(e.target.value)}/>
                 </div>
-                <GoogleLogin className={classes.signInButton} clientId={clientId} buttonText='Sign In with Google' onSuccess={onSuccess} onFailure={onFailure} cookiePolicy={'single_host_origin'} isSignedIn={true} />
+                <button className={classes.signInButton} onClick={login}>
+                        Sign in with Google
+                </button>
             </div>
         </div>  
     )

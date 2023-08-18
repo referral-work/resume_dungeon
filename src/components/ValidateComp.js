@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import { CircularProgress } from '@material-ui/core';
-import { useGoogleLogout } from 'react-google-login';
-
-const clientId = process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID
+import { googleLogout } from '@react-oauth/google'; 
 
 const ValidateComp = () => {
     const location = useLocation()
@@ -18,12 +16,17 @@ const ValidateComp = () => {
     }
     const [userIp, setUserIp] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    const { signOut } = useGoogleLogout({
-        clientId,
-        onLogoutSuccess: () => {
-            navigate(`/login`, { state: {data: {isError: true, prevCouponCode: coupon}}});
-        },
-      });
+    const signOut = () => {
+        googleLogout()
+        navigate(`/login`, { state: {data: {isError: true, prevCouponCode: coupon}}});
+    }
+    
+    // useGoogleLogout({
+    //     clientId,
+    //     onLogoutSuccess: () => {
+    //         navigate(`/login`, { state: {data: {isError: true, prevCouponCode: coupon}}});
+    //     },
+    //   });
 
     useEffect(() => {
         async function fetchIP() {
