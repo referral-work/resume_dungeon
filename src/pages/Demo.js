@@ -249,7 +249,7 @@ const Demo = () => {
                 fontSize:18,
                 fontWeight:500
               }}
-            >Use <div 
+            >Share <div 
               style={{
                 display: 'inline-block',
                 backgroundColor: 'lightgrey',
