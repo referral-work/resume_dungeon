@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from "react";
 import { makeStyles } from '@mui/styles';
 import axios from 'axios';
+import logoImage from '../logo.png'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -71,6 +72,10 @@ const useStyles = makeStyles((theme) => ({
         marginRight: 'auto',
         color: 'red',
         marginBottom: 20
+    },
+    imageContainer: {
+        textAlign: 'center',
+        marginBottom: 30
     }
   }));
 
@@ -122,6 +127,9 @@ const LoginComp = () => {
     return (
         <div className={classes.root}>
             <div className={classes.container}>
+                <div className={classes.imageContainer}>
+                    <img src={logoImage} height={80}/>
+                </div>
                 <div>
                     {isError && <div
                         className={classes.errorBlock}
