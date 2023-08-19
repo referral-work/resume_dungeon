@@ -19,7 +19,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    padding: 20
+    padding: 20,
+    boxShadow: '0 0 10px 10px rgb(24 24 24 / 37%)'
   },
   searchInput: {
     borderRadius: 5,
@@ -32,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   closeButton: {
-    width: '100%',
+    width: '150px',
     marginLeft: 'auto',
     marginRight: 'auto',
     padding: '10px',
@@ -58,8 +59,9 @@ const useStyles = makeStyles((theme) => ({
     padding: 10,
     width: '100%',
     textAlign: 'left',
+    fontSize: 16,
     borderBottom: '1px solid lightgrey',
-    backgroundColor: ''
+    backgroundColor: 'white'
   }
 }));
 
