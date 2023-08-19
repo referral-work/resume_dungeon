@@ -7,6 +7,7 @@ import { pdfjs } from "react-pdf";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
 import { makeStyles } from '@material-ui/core';
+import JobProfilePopup from '../components/JobProfilePopupComp';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -64,8 +65,19 @@ const Demo = () => {
   const [isDailyLimitReached, setIsDailyLimitReached] = useState(false)
   const [selectedFileName, setSelectedFileName] = useState('');
   const [dots, setDots] = useState('');
+  const [selectedProfile, setSelectedProfile] = useState('')
   const classes = useStyles();
   const data = location.state;
+  const jobProfiles = ["Software Engineer", "Data Scientist", "UX Designer"];
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  const openPopup = () => {
+    setIsPopupOpen(true);
+  };
+
+  const closePopup = () => {
+    setIsPopupOpen(false);
+  };
 
   useEffect(() => {
     const fetchUserDetails = async (email) => {
@@ -410,7 +422,56 @@ const Demo = () => {
                   {val}
                 </button>
               ))}
-
+              <button
+                style={{
+                  padding: 15,
+                  border: "1px solid black",
+                  borderRadius: 16,
+                  background: "#fff",
+                  color: `${isDisable || isDailyLimitReached ? "gray" : "#000"}`,
+                  cursor: "pointer",
+                  margin: 4,
+                  fontSize: 16,
+                  marginBottom: 20,
+                }}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                disabled={isDisable || isDailyLimitReached}
+                onClick={() => {
+                  if(selectedProfile === null || selectedProfile.length === 0){
+                    alert("please select a profile to proceed.")
+                  } else {
+                    setPromptText("Show me the roadmap to become " + selectedProfile);
+                    setKeyWord("Show me the roadmap to become" + ". " + requestText)
+                  }
+                }}
+              >
+                Show me the road to become
+                <button
+                  style={{
+                    marginLeft: 20,
+                    padding: 10,
+                    border: '1px solid darkgrey',
+                    borderRadius: 5,
+                    fontSize: 14,
+                    cursor: 'pointer'
+                  }}
+                  disabled={isDisable || isDailyLimitReached}
+                  onClick={(e) => {
+                    setIsPopupOpen(true)
+                    e.stopPropagation()
+                  }}
+                  >
+                    {selectedProfile.length === 0 ? 'Select profile' : selectedProfile}
+                </button>
+              </button>
+              <JobProfilePopup
+                isOpen={isPopupOpen}
+                onClose={closePopup}
+                jobProfiles={jobProfiles}
+                selectedProfile={selectedProfile}
+                setSelectedProfile={setSelectedProfile}
+              />
             </div>
           </div>
         </div>
