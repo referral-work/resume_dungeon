@@ -148,6 +148,8 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 20,
     borderRadius: '50%',
     fontSize: 36,
+    marginTop: 'auto',
+    marginBottom: 'auto',
     border: '1px solid black',
 
     [theme.breakpoints.down("xs")]: {
