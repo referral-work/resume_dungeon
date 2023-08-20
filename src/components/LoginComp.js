@@ -84,7 +84,11 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: 500,
         fontSize: 24,
         border: 'none',
-        borderRadius: 10
+        borderRadius: 10,
+
+        [theme.breakpoints.down("xs")]: {
+            fontSize: 18
+        }
     },
     inputLabel: {
         width: "270px",
@@ -92,7 +96,11 @@ const useStyles = makeStyles((theme) => ({
         marginRight: 'auto',
         color: '#625757',
         fontSize: 24,
-        fontFamily: 'Roboto, sans-serif'
+        fontFamily: 'Roboto, sans-serif',
+
+        [theme.breakpoints.down("xs")]: {
+            fontSize: 18
+        }
     },
     errorBlock: {
         width: "270px",
@@ -103,8 +111,15 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: 20
     },
     imageContainer: {
-        textAlign: 'center',
-        marginBottom: 50
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginBottom: 50,
+        height: 120,
+        display: 'block',
+
+        [theme.breakpoints.down("xs")]: {
+            height: 80
+        }
     },
     hurryUp: {
         fontSize: 64,
@@ -113,7 +128,7 @@ const useStyles = makeStyles((theme) => ({
 
         [theme.breakpoints.down("sm")]: {
             padding: 0,
-            fontSize: 48
+            fontSize: 36
         }
     },
     belowHurryUp: {
@@ -125,7 +140,20 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.down("sm")]: {
             padding: 10,
             paddingTop: 30,
-            fontSize: 30
+            fontSize: 24
+        }
+    },
+    surityBox: {
+        fontStyle: 'italic',
+        paddingLeft: 15,
+        marginTop: 20,
+        fontSize: 18,
+        width: 270,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+
+        [theme.breakpoints.down("sm")]: {
+            fontSize: 14
         }
     }
 }));
@@ -189,8 +217,8 @@ const LoginComp = () => {
                     </div>
                 </div>
                 <div className={classes.rightContainer}>
-                    <div className={classes.imageContainer}>
-                        <img src={logoImage} height={120} />
+                    <div>
+                        <img className={classes.imageContainer} src={logoImage} />
                     </div>
                     <div>
                         {isError && <div
@@ -205,15 +233,7 @@ const LoginComp = () => {
                         Sign in with Google
                     </button>
                     <div
-                        style={{
-                            fontStyle: 'italic',
-                            paddingLeft: 15,
-                            marginTop: 20,
-                            fontSize: 18,
-                            width: 270,
-                            marginLeft: 'auto',
-                            marginRight: 'auto'
-                        }}
+                        className={classes.surityBox}
                     >
                         Relax! We won't bomb you with marketing mails
                     </div>
