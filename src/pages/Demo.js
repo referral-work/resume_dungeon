@@ -165,6 +165,14 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("xs")]: {
       fontSize: 14
     }
+  },
+  motto: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 36,
+    fontFamily: 'Montserrat',
+    margin: 10,
+    paddingTop: 30
   }
 }));
 
@@ -245,37 +253,37 @@ const Demo = () => {
         if (usedPromptCount !== currentPromptLimitCount) {
           setIsLoading(true);
 
-          const reqBody = {
-            data: {
-              email: data.data.email,
-              resumeText: requestText,
-              queryText: promptText
-            }
-          }
-          try {
-            let response
-              = await axios.post(`/api/user/generate`, JSON.stringify(reqBody), {
-                headers: {
-                  'Content-Type': 'application/json',
-                }
-              });
+          // const reqBody = {
+          //   data: {
+          //     email: data.data.email,
+          //     resumeText: requestText,
+          //     queryText: promptText
+          //   }
+          // }
+          // try {
+          //   let response
+          //     = await axios.post(`/api/user/generate`, JSON.stringify(reqBody), {
+          //       headers: {
+          //         'Content-Type': 'application/json',
+          //       }
+          //     });
 
-            if (response.status === 200) {
-              setGPT(response.data.responseText.split("\n"));
-              setIsLoading(false);
-              setCurrentPromptLimitCount(response.data.currentMaxPromptCount)
-              setUsedPromptCount(response.data.currentPromptCount)
-              setCouponCode(response.data.couponCode)
+          //   if (response.status === 200) {
+          //     setGPT(response.data.responseText.split("\n"));
+          //     setIsLoading(false);
+          //     setCurrentPromptLimitCount(response.data.currentMaxPromptCount)
+          //     setUsedPromptCount(response.data.currentPromptCount)
+          //     setCouponCode(response.data.couponCode)
 
-              if (response.data.currentMaxPromptCount === response.data.currentPromptCount) {
-                setIsDailyLimitReached(true)
-              } else {
-                setIsDailyLimitReached(false)
-              }
-            }
-          } catch (e) {
-            promptErrorMessage("you have reached your daily limit for prompts!")
-          }
+          //     if (response.data.currentMaxPromptCount === response.data.currentPromptCount) {
+          //       setIsDailyLimitReached(true)
+          //     } else {
+          //       setIsDailyLimitReached(false)
+          //     }
+          //   }
+          // } catch (e) {
+          //   promptErrorMessage("you have reached your daily limit for prompts!")
+          // }
         } else {
           promptErrorMessage("you have reached your daily limit for prompts!")
         }
@@ -295,6 +303,13 @@ const Demo = () => {
 
   useEffect(() => {
     const targetElement = document.querySelector('.promptResult');
+    const targetLoaderElement = document.querySelector('.analyzingSection');
+    if(isLoading) {
+      targetLoaderElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
     if (!isLoading && resGPT.length > 0) {
       targetElement.scrollIntoView({
         behavior: 'smooth',
@@ -412,6 +427,9 @@ const Demo = () => {
               <LogoutComp />
             </li>
           </ul>
+        </div>
+        <div className={classes.motto}>
+          Get your resume insights with Resum-AI
         </div>
         <div
           className={classes.usageDetailsContainer}
@@ -535,7 +553,7 @@ const Demo = () => {
                     border: "1px solid black",
                     borderRadius: 16,
                     background: "#fff",
-                    color: `${isDisable || isDailyLimitReached ? "gray" : "#000"}`,
+                    color: `${isDisable || isDailyLimitReached || isLoading ? "gray" : "#000"}`,
                     cursor: "pointer",
                     margin: 4,
                     fontSize: 16,
@@ -543,7 +561,7 @@ const Demo = () => {
                   }}
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
-                  disabled={isDisable || isDailyLimitReached}
+                  disabled={isDisable || isDailyLimitReached || isLoading}
                   value={val}
                   onClick={() => {
                     setPromptText(val);
@@ -559,7 +577,7 @@ const Demo = () => {
                   border: "1px solid black",
                   borderRadius: 16,
                   background: "#fff",
-                  color: `${isDisable || isDailyLimitReached ? "gray" : "#000"}`,
+                  color: `${isDisable || isDailyLimitReached || isLoading ? "gray" : "#000"}`,
                   cursor: "pointer",
                   margin: 4,
                   fontSize: 16,
@@ -567,7 +585,7 @@ const Demo = () => {
                 }}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-                disabled={isDisable || isDailyLimitReached}
+                disabled={isDisable || isDailyLimitReached || isLoading}
                 onClick={() => {
                   if (selectedProfile === null || selectedProfile.length === 0) {
                     alert("please select a profile to proceed.")
@@ -604,14 +622,16 @@ const Demo = () => {
             </div>
           </div>
         </div>
-        {isLoading && <div style={{
-          marginTop: 60,
-          fontWeight: 500,
-          fontSize: 20,
-          textAlign: 'center',
-          marginLeft: 'auto',
-          marginRight: 'auto'
-        }}>
+        {isLoading && <div 
+          className='analyzingSection'
+          style={{
+            marginTop: 60,
+            fontWeight: 500,
+            fontSize: 20,
+            textAlign: 'center',
+            marginLeft: 'auto',
+            marginRight: 'auto'
+          }}>
           <div>
             AI is analyzing your resume{dots}
           </div>
