@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { options } from '../data/options';
 import { pdfjs } from "react-pdf";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
+import { faFileUpload, faUser } from '@fortawesome/free-solid-svg-icons';
 import { makeStyles } from '@material-ui/core';
 import JobProfilePopup from '../components/JobProfilePopupComp';
 import FooterComp from '../components/footerComp';
@@ -113,16 +113,65 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   usageDetailsContainer: {
-    textAlign: "center",
     marginTop: 50,
     marginBottom: 50,
     fontSize: 18,
+    width: '90%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    display: 'flex',
+    flexDirection: 'row',
 
     [theme.breakpoints.down("xs")]: {
       marginTop: 30,
       marginBottom: 30,
       fontSize: 16
     },
+  },
+  usageDetails: {
+    width: '90%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 14
+    }
+  },
+  accountIconContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    padding: 20,
+    height: 30,
+    width: 30,
+    marginRight: 20,
+    borderRadius: '50%',
+    fontSize: 36,
+    border: '1px solid black',
+
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 24,
+      height: 20,
+      width: 20,
+      padding: 10,
+      marginRight: 10
+    }
+  },
+  couponCodeContainer: {
+    display: 'inline-block',
+    backgroundColor: 'lightgrey',
+    color: 'black',
+    borderRadius: 5,
+    marginLeft: 10,
+    marginRight: 10,
+    padding: 10,
+
+    [theme.breakpoints.down("xs")]: {
+      padding: 5,
+      marginLeft: 5,
+      marginRight: 5
+    }
   },
   andDivider: {
     [theme.breakpoints.down("sm")]: {
@@ -172,7 +221,11 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 36,
     fontFamily: 'Montserrat',
     margin: 10,
-    paddingTop: 30
+    paddingTop: 30,
+
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 28
+    }
   }
 }));
 
@@ -434,50 +487,48 @@ const Demo = () => {
         <div
           className={classes.usageDetailsContainer}
         >
-          <div
-            style={{
-              padding: 5,
-              fontWeight: 500
-            }}
-          >
-            {`Used ` + usedPromptCount + ` out of ` + currentPromptLimitCount + ` prompts as per your daily limit`}
-          </div
-          >
-          {currentPromptLimitCount === 2 &&
+          <div className={classes.accountIconContainer}>
+            <FontAwesomeIcon icon={faUser} />
+          </div>
+          <div className={classes.usageDetails}>
             <div
               style={{
                 padding: 5,
                 fontWeight: 500
               }}
-            >Share <div
+            >
+              {`Used: ` + usedPromptCount + ` out of ` + currentPromptLimitCount + ` prompts per daily usage`}
+            </div
+            >
+            {currentPromptLimitCount === 2 &&
+              <div
+                style={{
+                  padding: 5,
+                  fontWeight: 500
+                }}
+              >Share your coupon code
+                <div
+                  className={classes.couponCodeContainer}
+                >{couponCode}
+                  <button
+                    style={{
+                      padding: 5,
+                      borderRadius: 5
+                    }}
+                    className={classes.copyToClipboardButton}
+                    onClick={copyToClipboard}>
+                    {copied ? 'Copied!' : 'Copy'}
+                  </button>
+                </div> with friends and unlock more prompts per daily usage</div>
+            }
+            {isDailyLimitReached && <div
               style={{
-                display: 'inline-block',
-                backgroundColor: 'lightgrey',
-                color: 'black',
-                borderRadius: 5,
-                marginLeft: 10,
-                marginRight: 10,
-                padding: 10
+                padding: 5,
+                fontWeight: 500,
+                color: 'red'
               }}
-            >{couponCode}
-                <button
-                  style={{
-                    padding: 5,
-                    borderRadius: 5
-                  }}
-                  className={classes.copyToClipboardButton}
-                  onClick={copyToClipboard}>
-                  {copied ? 'Copied!' : 'Copy'}
-                </button>
-              </div> coupon code to increase your daily prompt limit</div>
-          }
-          {isDailyLimitReached && <div
-            style={{
-              padding: 5,
-              fontWeight: 500,
-              color: 'red'
-            }}
-          >You have used you daily limit of {currentPromptLimitCount} prompts</div>}
+            >You have used you daily limit of {currentPromptLimitCount} prompts</div>}
+          </div>
         </div>
         <div
           className={classes.container}
