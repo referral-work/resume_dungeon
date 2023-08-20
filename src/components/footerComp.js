@@ -10,7 +10,8 @@ const useStyles = makeStyles((theme) => ({
         color: 'white',
         textAlign: 'center',
         padding: 20,
-        fontFamily: 'montserrat,sans-serif'
+        fontFamily: 'montserrat,sans-serif',
+        paddingBottom: 50
     },
     sectionTitle: {
         fontSize: 24,

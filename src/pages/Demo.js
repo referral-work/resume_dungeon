@@ -40,17 +40,11 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 30,
     backgroundColor: '#00000014',
     borderRadius: 10,
-    padding: 30,
     minHeight: 20,
     border: '1px solid darkgrey',
-
-    [theme.breakpoints.down("sm")]: {
-      width: "75%",
-      padding: 20
-    }
   },
   selectProfileButton: {
-    marginLeft: 20,
+    marginLeft: 10,
     padding: 5,
     border: '2px solid darkgrey',
     borderRadius: 5,
@@ -98,6 +92,79 @@ const useStyles = makeStyles((theme) => ({
     border: 'none',
     cursor: 'pointer',
     marginLeft: 10
+  },
+  brandName: {
+    fontFamily: 'Roboto Serif',
+    cursor: 'pointer',
+    color: 'white',
+    marginLeft: 50,
+
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 24,
+      marginLeft: 20
+    },
+  },
+  logoutButton: {
+    display: "flex",
+    marginRight: 50,
+
+    [theme.breakpoints.down("xs")]: {
+      marginRight: 20
+    },
+  },
+  usageDetailsContainer: {
+    textAlign: "center",
+    marginTop: 50,
+    marginBottom: 50,
+    fontSize: 18,
+
+    [theme.breakpoints.down("xs")]: {
+      marginTop: 30,
+      marginBottom: 30,
+      fontSize: 16
+    },
+  },
+  andDivider: {
+    [theme.breakpoints.down("sm")]: {
+      marginTop: 20
+    }
+  },
+  uploadResumeBlockContainer: {
+    display: "flex",
+    flexDirection: 'column',
+    alignItems: "flex-end",
+    justifyContent: "flex-end",
+
+    [theme.breakpoints.down("xs")]: {
+      width: 200
+    }
+  },
+  uploadResumeBlock: {
+    padding: 16,
+    background: "#5271FF",
+    borderRadius: 4,
+    color: "white",
+    display: "inline-block",
+    cursor: "pointer",
+    fontWeight: 600,
+    width: 220,
+    textAlign: 'center',
+    fontSize: 20,
+
+    [theme.breakpoints.down("xs")]: {
+      width: 180,
+      fontSize: 16
+    }
+  },
+  uploadWarning: {
+    marginTop: 10,
+    color: 'darkblue',
+    fontSize: 16,
+    fontStyle: 'italic',
+
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 14
+    }
   }
 }));
 
@@ -155,18 +222,18 @@ const Demo = () => {
             'Content-Type': 'application/json',
           }
         });
-      if(response.status === 200) {
+      if (response.status === 200) {
         setCurrentPromptLimitCount(response.data.currentMaxPromptCount)
         setUsedPromptCount(response.data.currentPromptCount)
         setCouponCode(response.data.couponCode)
-        if(response.data.currentMaxPromptCount === response.data.currentPromptCount) {
+        if (response.data.currentMaxPromptCount === response.data.currentPromptCount) {
           setIsDailyLimitReached(true)
         } else {
           setIsDailyLimitReached(false)
         }
       }
     }
-    
+
     if (data === null) {
       navigate('/login')
     } else {
@@ -175,9 +242,9 @@ const Demo = () => {
 
     const handleOPENAIAPI = async () => {
       if (isExtracted && promptText) {
-        if(usedPromptCount !== currentPromptLimitCount){
+        if (usedPromptCount !== currentPromptLimitCount) {
           setIsLoading(true);
-          
+
           const reqBody = {
             data: {
               email: data.data.email,
@@ -185,13 +252,13 @@ const Demo = () => {
               queryText: promptText
             }
           }
-          try{
+          try {
             let response
-            = await axios.post(`/api/user/generate`, JSON.stringify(reqBody), {
-              headers: {
-                'Content-Type': 'application/json',
-              }
-            });
+              = await axios.post(`/api/user/generate`, JSON.stringify(reqBody), {
+                headers: {
+                  'Content-Type': 'application/json',
+                }
+              });
 
             if (response.status === 200) {
               setGPT(response.data.responseText.split("\n"));
@@ -199,14 +266,14 @@ const Demo = () => {
               setCurrentPromptLimitCount(response.data.currentMaxPromptCount)
               setUsedPromptCount(response.data.currentPromptCount)
               setCouponCode(response.data.couponCode)
-      
-              if(response.data.currentMaxPromptCount === response.data.currentPromptCount) {
+
+              if (response.data.currentMaxPromptCount === response.data.currentPromptCount) {
                 setIsDailyLimitReached(true)
               } else {
                 setIsDailyLimitReached(false)
               }
             }
-          } catch(e) {
+          } catch (e) {
             promptErrorMessage("you have reached your daily limit for prompts!")
           }
         } else {
@@ -221,7 +288,7 @@ const Demo = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setDots((prevDots) => (prevDots.length < 3 ? prevDots + '.' : ''));
-    }, 500); 
+    }, 500);
 
     return () => clearInterval(intervalId);
   }, []);
@@ -264,7 +331,7 @@ const Demo = () => {
 
   const handleFile = (e) => {
     let fileData = e.target.files[0];
-  
+
     if (fileData && (fileData.type === "application/pdf" || fileData.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
       setFile((prev) => fileData);
       const reader = new FileReader();
@@ -273,7 +340,7 @@ const Demo = () => {
       setSelectedFileName(fileData.name);
     } else {
       alert("Please select .pdf or .docx file");
-      e.target.value = null; 
+      e.target.value = null;
       return;
     }
   };
@@ -288,7 +355,7 @@ const Demo = () => {
     }
   };
 
-  function promptErrorMessage(msg){
+  function promptErrorMessage(msg) {
     alert(msg)
   }
 
@@ -297,7 +364,7 @@ const Demo = () => {
       e.target.style.color = "blue";
     }
   };
-  
+
   const handleMouseLeave = (e) => {
     if (!isDisable && !isDailyLimitReached) {
       e.target.style.color = "#000";
@@ -327,21 +394,14 @@ const Demo = () => {
             width: '100%'
           }}
         >
-          <h1 
+          <h1
+            className={classes.brandName}
             onClick={() => {
               window.location.href = homeUrl
             }}
-            style={{
-              fontFamily: 'Roboto Serif',
-              cursor: 'pointer',
-              color: 'white',
-              marginLeft: 50
-              }}>PLOPSO</h1>
+          >PLOPSO</h1>
           <ul
-            style={{
-              display: "flex",
-              marginRight: 50
-            }}
+            className={classes.logoutButton}
           >
             <li
               style={{
@@ -354,17 +414,12 @@ const Demo = () => {
           </ul>
         </div>
         <div
-          style={{
-            textAlign: "center",
-            marginTop: 50,
-            marginBottom:50
-          }}
+          className={classes.usageDetailsContainer}
         >
           <div
             style={{
               padding: 5,
-              fontSize:18,
-              fontWeight:500
+              fontWeight: 500
             }}
           >
             {`Used ` + usedPromptCount + ` out of ` + currentPromptLimitCount + ` prompts as per your daily limit`}
@@ -374,36 +429,34 @@ const Demo = () => {
             <div
               style={{
                 padding: 5,
-                fontSize:18,
-                fontWeight:500
+                fontWeight: 500
               }}
-            >Share <div 
+            >Share <div
               style={{
                 display: 'inline-block',
                 backgroundColor: 'lightgrey',
                 color: 'black',
-                borderRadius:5,
+                borderRadius: 5,
                 marginLeft: 10,
                 marginRight: 10,
                 padding: 10
               }}
             >{couponCode}
-            <button 
-              style={{
-                padding: 5,
-                borderRadius: 5
-              }}
-              className={classes.copyToClipboardButton}
-              onClick={copyToClipboard}>
-              {copied ? 'Copied!' : 'Copy'}
-            </button>
-            </div> coupon code to increase your daily prompt limit to 6</div>
+                <button
+                  style={{
+                    padding: 5,
+                    borderRadius: 5
+                  }}
+                  className={classes.copyToClipboardButton}
+                  onClick={copyToClipboard}>
+                  {copied ? 'Copied!' : 'Copy'}
+                </button>
+              </div> coupon code to increase your daily prompt limit</div>
           }
           {isDailyLimitReached && <div
             style={{
               padding: 5,
-              fontSize:18,
-              fontWeight:500,
+              fontWeight: 500,
               color: 'red'
             }}
           >You have used you daily limit of {currentPromptLimitCount} prompts</div>}
@@ -412,12 +465,7 @@ const Demo = () => {
           className={classes.container}
         >
           <div
-            style={{
-              display: "flex",
-              flexDirection: 'column',
-              alignItems: "flex-end",
-              justifyContent: "flex-end",
-            }}
+            className={classes.uploadResumeBlockContainer}
           >
             <div style={{ position: "relative", display: "inline-block" }}>
               <input
@@ -435,35 +483,20 @@ const Demo = () => {
                 onChange={handleFile}
               />
               <div
-                style={{
-                  padding: 16,
-                  background: "#5271FF",
-                  borderRadius: 4,
-                  color: "white",
-                  display: "inline-block",
-                  cursor: "pointer",
-                  fontWeight: 600,
-                  width: 220,
-                  textAlign: 'center',
-                  fontSize:20
-                }}
+                className={classes.uploadResumeBlock}
               >
-                <FontAwesomeIcon icon={faFileUpload}/> &nbsp;&nbsp;UPLOAD RESUME
+                <FontAwesomeIcon icon={faFileUpload} /> &nbsp;&nbsp;UPLOAD RESUME
               </div>
             </div>
             {selectedFileName && (
-                  <p style={{ fontSize: 14, marginTop: 8 }}>{selectedFileName}</p>
-                )}
+              <p style={{ fontSize: 14, marginTop: 8 }}>{selectedFileName}</p>
+            )}
             <div
-              style={{
-                marginTop: 10,
-                color: 'darkblue',
-                fontSize: 16,
-                fontStyle: 'italic'
-              }}
+              className={classes.uploadWarning}
             >(*Only Docx and PDF are accepted)</div>
           </div>
-          <div>
+          <div
+            className={classes.andDivider}>
             <h1>and</h1>
           </div>
           <div
@@ -536,7 +569,7 @@ const Demo = () => {
                 onMouseLeave={handleMouseLeave}
                 disabled={isDisable || isDailyLimitReached}
                 onClick={() => {
-                  if(selectedProfile === null || selectedProfile.length === 0){
+                  if (selectedProfile === null || selectedProfile.length === 0) {
                     alert("please select a profile to proceed.")
                     setBorderColor("red")
                   } else {
@@ -557,8 +590,8 @@ const Demo = () => {
                     setIsPopupOpen(true)
                     e.stopPropagation()
                   }}
-                  >
-                    {selectedProfile.length === 0 ? 'Select profile' : selectedProfile}
+                >
+                  {selectedProfile.length === 0 ? 'Select profile' : selectedProfile}
                 </button>
               </button>
               <JobProfilePopup
@@ -584,24 +617,28 @@ const Demo = () => {
           </div>
         </div>}
         {
-        // !isLoading && resGPT.length > 0 && 
-        (
-          <div
-            style={{
-              color: "black",
-              marginTop: 20
-            }}
-          >
-            <div className="promptResult" style={{width: '90%', marginLeft: 'auto', marginRight: 'auto', fontSize: 24, fontWeight:500}}>Result just made for you:</div>
+          // !isLoading && resGPT.length > 0 && 
+          (
             <div
-              className={classes.outputContainer}
+              style={{
+                color: "black",
+                marginTop: 40
+              }}
             >
-              {resGPT.length === 0 ? 'Ready...' : resGPT.map((line, index) => (
-                <div style={{marginTop: 10, lineHeight: 1.3}} key={index}>{line}</div>
-              ))}
+              <div className="promptResult" style={{ width: '90%', marginLeft: 'auto', marginRight: 'auto', fontSize: 24, fontWeight: 500 }}>Result just made for you:</div>
+              <div
+                className={classes.outputContainer}
+              >
+                <div style={{
+                  margin: 20
+                }}>
+                  {resGPT.length === 0 ? 'Ready...' : resGPT.map((line, index) => (
+                    <div style={{ marginTop: 10, lineHeight: 1.3 }} key={index}>{line}</div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
-        )}
+          )}
         <div
           className={classes.tryAnotherPrompt}
           onClick={() => {
