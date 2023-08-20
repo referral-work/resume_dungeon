@@ -180,7 +180,8 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
 
     [theme.breakpoints.down("sm")]: {
-      marginTop: 20
+      marginTop: 40,
+      marginBottom: 20
     }
   },
   uploadResumeBlockContainer: {
