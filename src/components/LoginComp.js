@@ -1,7 +1,7 @@
 import { useGoogleLogin } from '@react-oauth/google';
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from "react";
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from '@material-ui/core';
 import axios from 'axios';
 import logoImage from '../logo.png'
 
@@ -12,19 +12,24 @@ const useStyles = makeStyles((theme) => ({
         height: '100vh'
     },
     container: {
-        width: "600px",
+        width: "100%",
         border: "1px solid lightgrey",
         boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.1)',
         marginLeft: 'auto',
         marginRight: 'auto',
-        marginTop: 'auto',
-        marginBottom: 'auto',
-        height: '400px',
+        // marginTop: 'auto',
+        // marginBottom: 'auto',
+        // height: '100%',
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         borderRadius: 15,
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+
+        [theme.breakpoints.down("sm")]: {
+            flexDirection: 'column-reverse',
+            justifyContent: 'center'
+        },
     },
     leftContainer: {
         display: 'flex',
@@ -32,11 +37,25 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center',
         backgroundColor: 'rgba(70, 160, 148, 11%)',
         height: '100%',
-        width: 300,
-        textAlign: 'left'
+        width: '50%',
+        textAlign: 'left',
+        color: '#333131',
+
+        [theme.breakpoints.down("sm")]: {
+            width: '100%',
+            textAlign: 'center',
+            paddingBottom: '50px'
+        },
     },
     rightContainer: {
-        width: 300
+        width: '50%',
+        paddingBottom: '100px',
+
+        [theme.breakpoints.down("sm")]: {
+            width: '100%',
+            paddingBottom: '50px',
+            paddingTop: '50px'
+        },
     },
     couponInput: {
         width: "260px",
@@ -56,14 +75,14 @@ const useStyles = makeStyles((theme) => ({
         display: 'block',
         marginLeft: 'auto',
         marginRight: 'auto',
-        marginTop: '20px',
+        marginTop: '40px',
         cursor: 'pointer',
         paddingTop: 10,
         paddingBottom: 10,
         backgroundColor: '#2050e1',
         color: 'white',
         fontWeight: 500,
-        fontSize: 16,
+        fontSize: 24,
         border: 'none',
         borderRadius: 10
     },
@@ -72,6 +91,7 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: 'auto',
         marginRight: 'auto',
         color: '#625757',
+        fontSize: 24,
         fontFamily: 'Roboto, sans-serif'
     },
     errorBlock: {
@@ -84,7 +104,29 @@ const useStyles = makeStyles((theme) => ({
     },
     imageContainer: {
         textAlign: 'center',
-        marginBottom: 30
+        marginBottom: 50
+    },
+    hurryUp: {
+        fontSize: 64,
+        fontFamily: 'Montserrat',
+        paddingLeft: 100,
+
+        [theme.breakpoints.down("sm")]: {
+            padding: 0,
+            fontSize: 48
+        }
+    },
+    belowHurryUp: {
+        padding: 100,
+        fontSize: 48,
+        fontFamily: 'Opensans sans-serif',
+        paddingTop: 50,
+
+        [theme.breakpoints.down("sm")]: {
+            padding: 10,
+            paddingTop: 30,
+            fontSize: 30
+        }
     }
 }));
 
@@ -138,24 +180,17 @@ const LoginComp = () => {
             <div className={classes.container}>
                 <div className={classes.leftContainer}>
                     <div
-                    style={{
-                        fontSize: 36,
-                        fontFamily: 'Montserrat',
-                        paddingLeft: 20
-                    }}>
+                        className={classes.hurryUp}>
                         Hurry up!
                     </div>
-                    <div style={{
-                        padding: 20,
-                        fontSize: 20,
-                        fontFamily: 'Opensans sans-serif'
-                    }}>
+                    <div
+                        className={classes.belowHurryUp}>
                         Start using our awesome prompts now
                     </div>
                 </div>
                 <div className={classes.rightContainer}>
                     <div className={classes.imageContainer}>
-                        <img src={logoImage} height={60} />
+                        <img src={logoImage} height={120} />
                     </div>
                     <div>
                         {isError && <div
@@ -174,10 +209,13 @@ const LoginComp = () => {
                             fontStyle: 'italic',
                             paddingLeft: 15,
                             marginTop: 20,
-                            fontSize: 14
+                            fontSize: 18,
+                            width: 270,
+                            marginLeft: 'auto',
+                            marginRight: 'auto'
                         }}
                     >
-                        Relax! we won't bomb you with marketing mails
+                        Relax! We won't bomb you with marketing mails
                     </div>
                 </div>
             </div>

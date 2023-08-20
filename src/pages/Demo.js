@@ -304,7 +304,7 @@ const Demo = () => {
   useEffect(() => {
     const targetElement = document.querySelector('.promptResult');
     const targetLoaderElement = document.querySelector('.analyzingSection');
-    if(isLoading) {
+    if (isLoading) {
       targetLoaderElement.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
@@ -622,7 +622,7 @@ const Demo = () => {
             </div>
           </div>
         </div>
-        {isLoading && <div 
+        {isLoading && <div
           className='analyzingSection'
           style={{
             marginTop: 60,
