@@ -176,6 +176,9 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   andDivider: {
+    fontSize: 24,
+    fontWeight: 'bold',
+
     [theme.breakpoints.down("sm")]: {
       marginTop: 20
     }
@@ -227,6 +230,23 @@ const useStyles = makeStyles((theme) => ({
 
     [theme.breakpoints.down("xs")]: {
       fontSize: 28
+    }
+  },
+  promptSelectionTitle: {
+    fontSize: 24,
+
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 20
+    }
+  },
+  promptResultTitle: {
+    width: '90%', 
+    marginLeft: 'auto', 
+    marginRight: 'auto', 
+    fontSize: 24,
+
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 20
     }
   }
 }));
@@ -495,18 +515,18 @@ const Demo = () => {
           <div className={classes.usageDetails}>
             <div
               style={{
-                padding: 5,
-                fontWeight: 500
+                padding: 5
               }}
             >
-              {`Used: ` + usedPromptCount + ` out of ` + currentPromptLimitCount + ` prompts per daily usage`}
-            </div
-            >
+              {`Used: `} {<span style={{
+                fontWeight: 'bold',
+                color: `${isDailyLimitReached ? "red" : "#000"}`
+              }}> {usedPromptCount + ` out of ` + currentPromptLimitCount}</span>} {` prompts per daily usage`}
+            </div>
             {currentPromptLimitCount === 2 &&
               <div
                 style={{
                   padding: 5,
-                  fontWeight: 500
                 }}
               >Share your coupon code
                 <div
@@ -521,15 +541,8 @@ const Demo = () => {
                     onClick={copyToClipboard}>
                     {copied ? 'Copied!' : 'Copy'}
                   </button>
-                </div> with friends and unlock more prompts per daily usage</div>
+                </div> <br />{`-> let your friend Signin here with your coupon code -> unlock 6 prompts per daily usage`}</div>
             }
-            {isDailyLimitReached && <div
-              style={{
-                padding: 5,
-                fontWeight: 500,
-                color: 'red'
-              }}
-            >You have used you daily limit of {currentPromptLimitCount} prompts</div>}
           </div>
         </div>
         <div
@@ -568,20 +581,17 @@ const Demo = () => {
           </div>
           <div
             className={classes.andDivider}>
-            <h1>and</h1>
+            and
           </div>
           <div
             className={classes.promptSelectionContainer}
           >
             <p
-              style={{
-                fontSize: "24px",
-                fontWeight: 500
-              }}
+              className={classes.promptSelectionTitle}
             >
               Choose one of the below prompt
             </p>
-            {(isDisable || isDailyLimitReached) && (
+            {(isDisable && !isDailyLimitReached) && (
               <div
                 style={{
                   color: 'red',
@@ -698,7 +708,7 @@ const Demo = () => {
                 marginTop: 40
               }}
             >
-              <div className="promptResult" style={{ width: '90%', marginLeft: 'auto', marginRight: 'auto', fontSize: 24, fontWeight: 500 }}>Result just made for you:</div>
+              <div className={"promptResult " + classes.promptResultTitle}>Result just made for you:</div>
               <div
                 className={classes.outputContainer}
               >
