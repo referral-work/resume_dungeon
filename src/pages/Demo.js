@@ -253,37 +253,37 @@ const Demo = () => {
         if (usedPromptCount !== currentPromptLimitCount) {
           setIsLoading(true);
 
-          // const reqBody = {
-          //   data: {
-          //     email: data.data.email,
-          //     resumeText: requestText,
-          //     queryText: promptText
-          //   }
-          // }
-          // try {
-          //   let response
-          //     = await axios.post(`/api/user/generate`, JSON.stringify(reqBody), {
-          //       headers: {
-          //         'Content-Type': 'application/json',
-          //       }
-          //     });
+          const reqBody = {
+            data: {
+              email: data.data.email,
+              resumeText: requestText,
+              queryText: promptText
+            }
+          }
+          try {
+            let response
+              = await axios.post(`/api/user/generate`, JSON.stringify(reqBody), {
+                headers: {
+                  'Content-Type': 'application/json',
+                }
+              });
 
-          //   if (response.status === 200) {
-          //     setGPT(response.data.responseText.split("\n"));
-          //     setIsLoading(false);
-          //     setCurrentPromptLimitCount(response.data.currentMaxPromptCount)
-          //     setUsedPromptCount(response.data.currentPromptCount)
-          //     setCouponCode(response.data.couponCode)
+            if (response.status === 200) {
+              setGPT(response.data.responseText.split("\n"));
+              setIsLoading(false);
+              setCurrentPromptLimitCount(response.data.currentMaxPromptCount)
+              setUsedPromptCount(response.data.currentPromptCount)
+              setCouponCode(response.data.couponCode)
 
-          //     if (response.data.currentMaxPromptCount === response.data.currentPromptCount) {
-          //       setIsDailyLimitReached(true)
-          //     } else {
-          //       setIsDailyLimitReached(false)
-          //     }
-          //   }
-          // } catch (e) {
-          //   promptErrorMessage("you have reached your daily limit for prompts!")
-          // }
+              if (response.data.currentMaxPromptCount === response.data.currentPromptCount) {
+                setIsDailyLimitReached(true)
+              } else {
+                setIsDailyLimitReached(false)
+              }
+            }
+          } catch (e) {
+            promptErrorMessage("you have reached your daily limit for prompts!")
+          }
         } else {
           promptErrorMessage("you have reached your daily limit for prompts!")
         }
