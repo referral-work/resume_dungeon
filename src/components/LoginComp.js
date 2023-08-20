@@ -17,13 +17,9 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.1)',
         marginLeft: 'auto',
         marginRight: 'auto',
-        // marginTop: 'auto',
-        // marginBottom: 'auto',
-        // height: '100%',
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        borderRadius: 15,
         justifyContent: 'space-between',
 
         [theme.breakpoints.down("sm")]: {
