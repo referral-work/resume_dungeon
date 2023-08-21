@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { options } from '../data/options';
 import { pdfjs } from "react-pdf";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileUpload, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faCircleInfo, faCopy, faFileUpload, faUser } from '@fortawesome/free-solid-svg-icons';
 import { makeStyles } from '@material-ui/core';
 import JobProfilePopup from '../components/JobProfilePopupComp';
 import FooterComp from '../components/footerComp';
@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-evenly",
     flexDirection: "row",
     flexWrap: "wrap",
+    marginTop: 20,
 
     [theme.breakpoints.down("sm")]: {
       flexDirection: "column",
@@ -91,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
   copyToClipboardButton: {
     border: 'none',
     cursor: 'pointer',
-    marginLeft: 10
+    marginLeft: 5
   },
   brandName: {
     fontFamily: 'Roboto Serif',
@@ -114,7 +115,6 @@ const useStyles = makeStyles((theme) => ({
   },
   usageDetailsContainer: {
     marginTop: 50,
-    marginBottom: 50,
     fontSize: 18,
     width: '90%',
     marginLeft: 'auto',
@@ -124,7 +124,6 @@ const useStyles = makeStyles((theme) => ({
 
     [theme.breakpoints.down("xs")]: {
       marginTop: 30,
-      marginBottom: 30,
       fontSize: 16
     },
   },
@@ -162,12 +161,13 @@ const useStyles = makeStyles((theme) => ({
   },
   couponCodeContainer: {
     display: 'inline-block',
-    backgroundColor: 'lightgrey',
-    color: 'black',
+    backgroundColor: '#454444',
+    color: 'white',
     borderRadius: 5,
     marginLeft: 10,
     marginRight: 10,
     padding: 10,
+    letterSpacing: 1,
 
     [theme.breakpoints.down("xs")]: {
       padding: 5,
@@ -241,14 +241,57 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   promptResultTitle: {
-    width: '90%', 
-    marginLeft: 'auto', 
-    marginRight: 'auto', 
+    width: '90%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
     fontSize: 24,
 
     [theme.breakpoints.down("xs")]: {
       fontSize: 20
     }
+  },
+  infoContent: {
+    overflow: 'hidden',
+    maxHeight: '500px',
+    transition: 'max-height 0.5s ease-out, transform 0.5s ease-out, opacity 0.5s ease-out',
+    marginBottom: 10,
+    marginTop: 5,
+    width: 350,
+    marginLeft: '10%',
+    marginRight: '10%',
+    borderRadius: 10,
+    fontSize: 14,
+    padding: 15,
+    backgroundColor: '#d5c228',
+    opacity: 1,
+    transform: 'scaleY(1)',
+
+    [theme.breakpoints.down("sm")]: {
+      width: 300,
+      marginLeft: '20%'
+    },
+
+    [theme.breakpoints.down("xs")]: {
+      width: 280,
+      marginLeft: '10%'
+    }
+  },
+  collapsed: {
+    maxHeight: 0,
+    opacity: 0,
+    transform: 'scaleY(0)',
+    padding: 0,
+  },
+  copiedConfirm: {
+    fontSize: 14,
+    display: 'inline',
+    position: 'absolute',
+    zIndex: 10,
+    padding: 10,
+    marginTop: 5,
+    backgroundColor: '#000000ab',
+    color: 'white',
+    borderRadius: 10
   }
 }));
 
@@ -275,14 +318,22 @@ const Demo = () => {
   const jobProfiles = ["Software Engineer", "Data Scientist", "UX Designer"];
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [borderColor, setBorderColor] = useState("darkgrey");
-  const [copied, setCopied] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
+  const [copied, setCopied ] = useState(false);
 
   const formUrl = 'https://www.plopso.com/#referral-form'
   const homeUrl = "https://www.plopso.com/"
 
   const copyToClipboard = () => {
+    setCopied(true)
     navigator.clipboard.writeText(couponCode);
-    setCopied(true);
+    setInterval(()=>{
+      setCopied(false)
+    }, 2000)
+  };
+
+  const toggleExpand = () => {
+    setShowInfo(!showInfo);
   };
 
   const openPopup = () => {
@@ -540,11 +591,17 @@ const Demo = () => {
                     }}
                     className={classes.copyToClipboardButton}
                     onClick={copyToClipboard}>
-                    {copied ? 'Copied!' : 'Copy'}
+                    <FontAwesomeIcon icon={faCopy} />
                   </button>
-                </div> <br />{`-> let your friend Signin here with your coupon code -> unlock 6 prompts per daily usage`}</div>
+                </div>
+                { copied && <div className={classes.copiedConfirm}>copied!</div> }
+                <FontAwesomeIcon onClick={toggleExpand}  cursor='pointer' style={{ color: '#d5c228' }} icon={faCircleInfo} />
+              </div>
             }
           </div>
+        </div>
+        <div className={`${classes.infoContent} ${showInfo ? '' : classes.collapsed}`}>
+          {`let your friend Signin here with your coupon code -> unlock 6 prompts per daily usage`}
         </div>
         <div
           className={classes.container}
