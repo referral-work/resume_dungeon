@@ -11,6 +11,7 @@ import JobProfilePopup from '../components/JobProfilePopupComp';
 import FooterComp from '../components/footerComp';
 import PizZip from "pizzip";
 import { DOMParser } from "@xmldom/xmldom";
+import { jobProfiles } from '../data/job_profiles';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -354,7 +355,6 @@ const Demo = () => {
   const [selectedProfile, setSelectedProfile] = useState('')
   const classes = useStyles();
   const data = location.state;
-  const jobProfiles = ["Software Engineer", "Data Scientist", "UX Designer"];
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [borderColor, setBorderColor] = useState("darkgrey");
   const [showInfo, setShowInfo] = useState(false);

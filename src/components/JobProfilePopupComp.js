@@ -50,7 +50,8 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   searchResult: {
-    height: 240
+    height: 240,
+    overflow: 'scroll'
   },
   selectableItem: {
     border: 'none',
@@ -67,9 +68,10 @@ const useStyles = makeStyles((theme) => ({
 
 const JobProfilePopup = ({ isOpen, onClose, jobProfiles, selectedProfile, setSelectedProfile }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const filteredProfiles = jobProfiles.filter(profile =>
+  let filteredProfiles = jobProfiles.filter(profile =>
     profile.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  filteredProfiles = [searchQuery, ...filteredProfiles]
 
   const classes = useStyles();
 
