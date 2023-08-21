@@ -46,6 +46,14 @@ const useStyles = makeStyles((theme) => ({
     minHeight: 20,
     border: '1px solid darkgrey',
   },
+  outputInnerContainer: {
+    margin: 20,
+
+    [theme.breakpoints.down("xs")]: {
+      marginLeft: 10,
+      marginRight: 10
+    },
+  },
   selectProfileButton: {
     marginLeft: 10,
     padding: 5,
@@ -72,6 +80,11 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       color: 'green'
     },
+
+    [theme.breakpoints.down('xs')]: {
+      fontSize: 16,
+      padding: 10
+    }
   },
   navigateButton: {
     width: 250,
@@ -90,6 +103,11 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       color: 'green'
     },
+
+    [theme.breakpoints.down('xs')]: {
+      fontSize: 16,
+      padding: 10
+    }
   },
   copyToClipboardButton: {
     border: 'none',
@@ -284,7 +302,7 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: 0,
     opacity: 0,
     transform: 'scaleY(0)',
-    padding: 0,
+    padding: 15,
   },
   copiedConfirm: {
     fontSize: 14,
@@ -297,6 +315,22 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#000000ab',
     color: 'white',
     borderRadius: 10
+  },
+  selectionPromptItem: {
+    padding: 15,
+    border: "1px solid black",
+    borderRadius: 16,
+    background: "#fff",
+    cursor: "pointer",
+    margin: 4,
+    fontSize: 16,
+    marginBottom: 20,
+
+    [theme.breakpoints.down("xs")]: {
+      fontSize: 14,
+      padding: 10,
+      borderRadius: 10
+    }
   }
 }));
 
@@ -485,13 +519,13 @@ const Demo = () => {
     }
     return new DOMParser().parseFromString(str, "text/xml");
   }
-  
+
   function getParagraphs(content) {
     const zip = new PizZip(content);
     const xml = str2xml(zip.files["word/document.xml"].asText());
     const paragraphsXml = xml.getElementsByTagName("w:p");
     const paragraphs = [];
-  
+
     for (let i = 0, len = paragraphsXml.length; i < len; i++) {
       let fullText = "";
       const textsXml = paragraphsXml[i].getElementsByTagName("w:t");
@@ -727,17 +761,10 @@ const Demo = () => {
             >
               {options.map((val, index) => (
                 <button
+                  className={classes.selectionPromptItem}
                   key={index}
                   style={{
-                    padding: 15,
-                    border: "1px solid black",
-                    borderRadius: 16,
-                    background: "#fff",
-                    color: `${isDisable || isDailyLimitReached || isLoading ? "gray" : "#000"}`,
-                    cursor: "pointer",
-                    margin: 4,
-                    fontSize: 16,
-                    marginBottom: 20,
+                    color: `${isDisable || isDailyLimitReached || isLoading ? "gray" : "#000"}`
                   }}
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
@@ -752,16 +779,9 @@ const Demo = () => {
                 </button>
               ))}
               <button
+                className={classes.selectionPromptItem}
                 style={{
-                  padding: 10,
-                  border: "1px solid black",
-                  borderRadius: 16,
-                  background: "#fff",
                   color: `${isDisable || isDailyLimitReached || isLoading ? "gray" : "#000"}`,
-                  cursor: "pointer",
-                  margin: 4,
-                  fontSize: 16,
-                  marginBottom: 20,
                 }}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
@@ -829,9 +849,8 @@ const Demo = () => {
               <div
                 className={classes.outputContainer}
               >
-                <div style={{
-                  margin: 20
-                }}>
+                <div 
+                  className={classes.outputInnerContainer}>
                   {resGPT.length === 0 ? 'Ready...' : resGPT.map((line, index) => (
                     <div style={{ marginTop: 10, lineHeight: 1.3 }} key={index}>{line}</div>
                   ))}
