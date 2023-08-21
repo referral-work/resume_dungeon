@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
         textAlign: 'center',
         padding: 20,
         fontFamily: 'montserrat,sans-serif',
-        paddingBottom: 50
+        paddingBottom: 20
     },
     sectionTitle: {
         fontSize: 24,
