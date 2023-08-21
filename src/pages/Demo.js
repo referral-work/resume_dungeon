@@ -288,7 +288,8 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     zIndex: 10,
     padding: 10,
-    marginTop: 5,
+    marginTop: -40,
+    marginLeft: -80,
     backgroundColor: '#000000ab',
     color: 'white',
     borderRadius: 10
@@ -594,7 +595,8 @@ const Demo = () => {
                     <FontAwesomeIcon icon={faCopy} />
                   </button>
                 </div>
-                { copied && <div className={classes.copiedConfirm}>copied!</div> }
+                { copied && 
+                <div className={classes.copiedConfirm}>copied!</div> }
                 <FontAwesomeIcon onClick={toggleExpand}  cursor='pointer' style={{ color: '#d5c228' }} icon={faCircleInfo} />
               </div>
             }
