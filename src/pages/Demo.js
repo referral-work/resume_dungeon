@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import LogoutComp from '../components/LogoutComp';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { options } from '../data/options';
+import { options, promptMapping } from '../data/options';
 import { pdfjs } from "react-pdf";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleInfo, faCopy, faFileUpload, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -683,10 +683,10 @@ const Demo = () => {
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                   disabled={isDisable || isDailyLimitReached || isLoading}
-                  value={val}
+                  value={promptMapping[index]}
                   onClick={() => {
-                    setPromptText(val);
-                    setKeyWord(val + ". " + requestText);
+                    setPromptText(promptMapping[index]);
+                    setKeyWord(promptMapping[index] + ". " + requestText);
                   }}
                 >
                   {val}
@@ -712,12 +712,12 @@ const Demo = () => {
                     alert("please select a profile to proceed.")
                     setBorderColor("red")
                   } else {
-                    setPromptText("Show me the roadmap to become " + selectedProfile);
+                    setPromptText(promptMapping[3] + selectedProfile + promptMapping[4]);
                     setKeyWord("Show me the roadmap to become" + ". " + requestText)
                   }
                 }}
               >
-                Show me the road to become
+                Show me the roadmap to become
                 <button
                   className={classes.selectProfileButton}
                   style={{
