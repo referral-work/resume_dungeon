@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     footerContainer: {
@@ -16,6 +16,18 @@ const useStyles = makeStyles((theme) => ({
     sectionTitle: {
         fontSize: 24,
         fontWeight: 'bold',
+
+        [theme.breakpoints.down("xs")]: {
+            fontSize: 20
+        },
+    },
+    copyright: {
+        fontWeight: 'bold',
+        fontSize: 20,
+        marginTop: 30,
+        [theme.breakpoints.down('xs')]: {
+            fontSize: 18
+        }
     }
 }))
 
@@ -41,11 +53,8 @@ const FooterComp = () => {
                 }}>
                     Write to us and we will reach back to you within 24 hours
                 </div>
-                <div style={{
-                    fontWeight: 'bold',
-                    fontSize: 20,
-                    marginTop: 30
-                }}>
+                <div
+                    className={classes.copyright}>
                     © 2023-2024 Plopso Inc.
                 </div>
             </div>

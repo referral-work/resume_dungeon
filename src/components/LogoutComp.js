@@ -9,7 +9,7 @@ const LogoutComp = () => {
         navigate('/login');
     }
     return (
-        <div style={{fontWeight: 500, cursor: 'pointer', fontSize: 18, padding: 10, backgroundColor: 'white', borderRadius: 10}} onClick={logout}>
+        <div style={{cursor: 'pointer', fontSize: 18, padding: 10, backgroundColor: 'white', borderRadius: 10}} onClick={logout}>
             Logout
         </div>
     )

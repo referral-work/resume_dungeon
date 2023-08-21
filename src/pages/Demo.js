@@ -101,15 +101,17 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
     color: 'white',
     marginLeft: 50,
+    fontSize: 24,
 
     [theme.breakpoints.down("xs")]: {
-      fontSize: 24,
       marginLeft: 20
     },
   },
   logoutButton: {
     display: "flex",
     marginRight: 50,
+    marginTop: 10,
+    marginBottom: 10,
 
     [theme.breakpoints.down("xs")]: {
       marginRight: 20
@@ -629,7 +631,7 @@ const Demo = () => {
               {`Used: `} {<span style={{
                 fontWeight: 'bold',
                 color: `${isDailyLimitReached ? "red" : "#000"}`
-              }}> {usedPromptCount + ` out of ` + currentPromptLimitCount}</span>} {` prompts per daily usage`}
+              }}> {usedPromptCount + ` out of ` + currentPromptLimitCount}</span>} {` prompts per daily usage.`}
             </div>
             {currentPromptLimitCount === 2 &&
               <div
@@ -658,7 +660,7 @@ const Demo = () => {
           </div>
         </div>
         <div className={`${classes.infoContent} ${showInfo ? '' : classes.collapsed}`}>
-          {`let your friend Signin here with your coupon code -> unlock 6 prompts per daily usage`}
+          {`Ask your friend to login here using your coupon code and then, you will unlock 6 prompts per daily usage.`}
         </div>
         <div
           className={classes.container}
