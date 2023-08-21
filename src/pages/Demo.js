@@ -9,6 +9,8 @@ import { faCircleInfo, faCopy, faFileUpload, faUser } from '@fortawesome/free-so
 import { makeStyles } from '@material-ui/core';
 import JobProfilePopup from '../components/JobProfilePopupComp';
 import FooterComp from '../components/footerComp';
+import PizZip from "pizzip";
+import { DOMParser } from "@xmldom/xmldom";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -320,7 +322,7 @@ const Demo = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [borderColor, setBorderColor] = useState("darkgrey");
   const [showInfo, setShowInfo] = useState(false);
-  const [copied, setCopied ] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const formUrl = 'https://www.plopso.com/#referral-form'
   const homeUrl = "https://www.plopso.com/"
@@ -328,9 +330,6 @@ const Demo = () => {
   const copyToClipboard = () => {
     setCopied(true)
     navigator.clipboard.writeText(couponCode);
-    setInterval(()=>{
-      setCopied(false)
-    }, 2000)
   };
 
   const toggleExpand = () => {
@@ -369,8 +368,8 @@ const Demo = () => {
         }
       }
     }
-
-    if (data === null) {
+    const access_token = localStorage.getItem("google-access-token")
+    if (access_token === null || data === null) {
       navigate('/login')
     } else {
       fetchUserDetails(data.data.email)
@@ -380,7 +379,6 @@ const Demo = () => {
       if (isExtracted && promptText) {
         if (usedPromptCount !== currentPromptLimitCount) {
           setIsLoading(true);
-
           const reqBody = {
             data: {
               email: data.data.email,
@@ -430,6 +428,14 @@ const Demo = () => {
   }, []);
 
   useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCopied(false)
+    }, 1000)
+
+    return () => clearInterval(intervalId);
+  }, [copied]);
+
+  useEffect(() => {
     const targetElement = document.querySelector('.promptResult');
     const targetLoaderElement = document.querySelector('.analyzingSection');
     if (isLoading) {
@@ -471,16 +477,53 @@ const Demo = () => {
       setRequesText("");
     }
   };
+  function str2xml(str) {
+    if (str.charCodeAt(0) === 65279) {
+      str = str.substr(1);
+    }
+    return new DOMParser().parseFromString(str, "text/xml");
+  }
+  
+  function getParagraphs(content) {
+    const zip = new PizZip(content);
+    const xml = str2xml(zip.files["word/document.xml"].asText());
+    const paragraphsXml = xml.getElementsByTagName("w:p");
+    const paragraphs = [];
+  
+    for (let i = 0, len = paragraphsXml.length; i < len; i++) {
+      let fullText = "";
+      const textsXml = paragraphsXml[i].getElementsByTagName("w:t");
+      for (let j = 0, len2 = textsXml.length; j < len2; j++) {
+        const textXml = textsXml[j];
+        if (textXml.childNodes) {
+          fullText += textXml.childNodes[0].nodeValue;
+        }
+      }
+      if (fullText) {
+        paragraphs.push(fullText);
+      }
+    }
+    return paragraphs;
+  }
+
+  const extractTextFromDOCX = async (content) => {
+    try {
+      setIsDisable(true);
+      const paragraphs = getParagraphs(content);
+      const extractedText = paragraphs.join(' ')
+      setRequesText(extractedText);
+      setIsDisable(false);
+    } catch (error) {
+      console.error('Error extracting text from DOCX:', error);
+      setRequesText('');
+    }
+  };
 
   const handleFile = (e) => {
     let fileData = e.target.files[0];
 
     if (fileData && (fileData.type === "application/pdf" || fileData.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
-      setFile((prev) => fileData);
-      const reader = new FileReader();
-      reader.onload = handleFileRead;
-      reader.readAsArrayBuffer(fileData);
-      setSelectedFileName(fileData.name);
+      setFile(fileData);
     } else {
       alert("Please select .pdf or .docx file");
       e.target.value = null;
@@ -488,11 +531,23 @@ const Demo = () => {
     }
   };
 
+  useEffect(() => {
+    if (file !== null) {
+      const reader = new FileReader();
+      reader.onload = handleFileRead
+      reader.readAsArrayBuffer(file);
+      setSelectedFileName(file.name);
+    }
+  }, [file])
+
   const handleFileRead = async (event) => {
     const content = event.target.result;
-
     if (content) {
-      await extractTextFromPDF(content);
+      if (file.name.endsWith('.pdf')) {
+        await extractTextFromPDF(content);
+      } else if (file.name.endsWith('.docx')) {
+        await extractTextFromDOCX(content);
+      }
       setKeyWord(promptText + ". " + requestText);
       setIsExtracted(true);
     }
@@ -503,13 +558,13 @@ const Demo = () => {
   }
 
   const handleMouseEnter = (e) => {
-    if (!isDisable && !isDailyLimitReached) {
+    if (!isDisable && !isDailyLimitReached && !isLoading) {
       e.target.style.color = "blue";
     }
   };
 
   const handleMouseLeave = (e) => {
-    if (!isDisable && !isDailyLimitReached) {
+    if (!isDisable && !isDailyLimitReached && !isLoading) {
       e.target.style.color = "#000";
     }
   };
@@ -595,9 +650,9 @@ const Demo = () => {
                     <FontAwesomeIcon icon={faCopy} />
                   </button>
                 </div>
-                { copied && 
-                <div className={classes.copiedConfirm}>copied!</div> }
-                <FontAwesomeIcon onClick={toggleExpand}  cursor='pointer' style={{ color: '#d5c228' }} icon={faCircleInfo} />
+                {copied &&
+                  <div className={classes.copiedConfirm}>copied!</div>}
+                <FontAwesomeIcon onClick={toggleExpand} cursor='pointer' style={{ color: '#d5c228' }} icon={faCircleInfo} />
               </div>
             }
           </div>
