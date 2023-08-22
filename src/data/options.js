@@ -39,15 +39,15 @@ export const promptMapping = [
     5. Analyze the different courses the candidate has completed to extract their area of expertise and the level of expertise they have achieved. Identify the job profiles that can make the best use of their knowledge.
     6. Consider the candidate's portfolio, which showcases the work they have done on various skills. Determine which job profile would be most suited for the skills demonstrated in the candidate's portfolio.
     7. Review the candidate's skill section and only focus on skills for which there is evidence of work, such as utilization in projects, internships, courses, certificates, or a portfolio.
-    
-    Now give me  just 1 job profile, seems best suited for them, need name of Job Profile and What things they should correct in resume while applying for that position, suggest in 3 bullet point.
-    
+
+    Now give me  just 1 job profile, seems best suited for them, need name of Job Profile and What things they should correct in resume while applying for that position so that they can leverage on resume screening selection part, suggest. 
+
     Response format expected from you:-
-                                                                                                 Job profile
-    
-                                                                                               point1:-
-                                                                                               point2:-
-                                                                                               point3:-`,
+
+    Job Profile:-
+
+    Suggestions for Resume:-
+            `,
     `Your Task:-
     1. Understand the candidate's latest work experience, job responsibilities, area of expertise, and the hard and soft skills they have acquired. Assess how deeply the candidate has developed these skills, as this is a critical aspect of the prediction model.
     2. Consider the candidate's previous work experiences, job responsibilities, area of expertise, and the skills they have acquired. Evaluate the depth of their skill development.
