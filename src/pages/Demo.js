@@ -759,25 +759,6 @@ const Demo = () => {
                 flexDirection: "column",
               }}
             >
-              {options.map((val, index) => (
-                <button
-                  className={classes.selectionPromptItem}
-                  key={index}
-                  style={{
-                    color: `${isDisable || isDailyLimitReached || isLoading ? "gray" : "#000"}`
-                  }}
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                  disabled={isDisable || isDailyLimitReached || isLoading}
-                  value={promptMapping[index]}
-                  onClick={() => {
-                    setPromptText(promptMapping[index]);
-                    setKeyWord(promptMapping[index] + ". " + requestText);
-                  }}
-                >
-                  {val}
-                </button>
-              ))}
               <button
                 className={classes.selectionPromptItem}
                 style={{
@@ -819,6 +800,25 @@ const Demo = () => {
                 selectedProfile={selectedProfile}
                 setSelectedProfile={setSelectedProfile}
               />
+              {options.map((val, index) => (
+                <button
+                  className={classes.selectionPromptItem}
+                  key={index}
+                  style={{
+                    color: `${isDisable || isDailyLimitReached || isLoading ? "gray" : "#000"}`
+                  }}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                  disabled={isDisable || isDailyLimitReached || isLoading}
+                  value={promptMapping[index]}
+                  onClick={() => {
+                    setPromptText(promptMapping[index]);
+                    setKeyWord(promptMapping[index] + ". " + requestText);
+                  }}
+                >
+                  {val}
+                </button>
+              ))}
             </div>
           </div>
         </div>
@@ -849,7 +849,7 @@ const Demo = () => {
               <div
                 className={classes.outputContainer}
               >
-                <div 
+                <div
                   className={classes.outputInnerContainer}>
                   {resGPT.length === 0 ? 'Ready...' : resGPT.map((line, index) => (
                     <div style={{ marginTop: 10, lineHeight: 1.3 }} key={index}>{line}</div>
