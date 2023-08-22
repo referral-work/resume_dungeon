@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { IUser } from './users.model';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
-import { INITIAL_MAX_PROMPT_COUNT, UPGRADED_MAX_PROMPT_COUNT } from 'src/utils/constants';
+import { Model } from 'mongoose';
+import { UPGRADED_MAX_PROMPT_COUNT } from 'src/utils/constants';
+import { ILogs } from './logs.model';
 
 @Injectable()
 export class UsersService {
     
-    constructor(@InjectModel('iuser') private readonly iuserModel: Model<IUser>){}
+    constructor(
+        @InjectModel('iuser') private readonly iuserModel: Model<IUser>,
+        @InjectModel('ilogs') private readonly ilogsModel: Model<ILogs>){}
     
     async isValidCouponCode(coupon_code: string, existingIUser: any): Promise<boolean> {
         const iuser = await this.iuserModel.findOne(
@@ -90,8 +93,7 @@ export class UsersService {
         return false
     }
 
-    async isPromptLimitReached(email: string): Promise<boolean> {
-        
+    async isPromptLimitReached(email: string): Promise<boolean> {       
         return false
     }
 
@@ -113,5 +115,15 @@ export class UsersService {
             randomString += possibleCharacters.charAt(randomIndex);
         }
         return randomString;
+    }
+
+    async createLog(email: string, resumeText: string, promptText: string) {
+        const createLog = new this.ilogsModel({
+            email: email,
+            prompt: promptText,
+            resume: resumeText
+        })
+
+        await this.ilogsModel.create(createLog)
     }
 }

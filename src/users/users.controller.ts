@@ -103,6 +103,7 @@ export class UsersController {
     existingIUser.currentPromptCount = existingIUser.currentPromptCount + 1
     existingIUser.resume = resumeText
     await this.usersService.updateUser(existingIUser)
+    await this.usersService.createLog(email, resumeText, queryText)
     return res.status(200).json({responseText: output.output, currentPromptCount: existingIUser.currentPromptCount, currentMaxPromptCount: existingIUser.currentMaxPromptCount, couponCode: existingIUser.couponCode})
    }
 
