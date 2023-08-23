@@ -1,7 +1,7 @@
 export const options = [
     "3 most suited job profiles for me and a brief on why",
     "Write a convincing LinkedIn/resume summary for my profile",
-    "A highly matching job profile for me and suggest improvements for likely success",
+    "Suggest a highly matching job profile for me and improvements for likely success",
 ];
 
 export const promptMapping = [

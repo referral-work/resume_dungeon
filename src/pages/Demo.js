@@ -61,7 +61,11 @@ const useStyles = makeStyles((theme) => ({
     border: '2px solid darkgrey',
     borderRadius: 5,
     fontSize: 14,
-    cursor: 'pointer'
+    cursor: 'pointer',
+
+    "&:hover": {
+      backgroundColor: '#cfcdcd'
+    }
   },
   tryAnotherPrompt: {
     width: 250,
@@ -219,7 +223,7 @@ const useStyles = makeStyles((theme) => ({
   },
   uploadResumeBlock: {
     padding: 16,
-    background: "#5271FF",
+    backgroundColor: "#5271FF",
     borderRadius: 4,
     color: "white",
     display: "inline-block",
@@ -712,13 +716,17 @@ const Demo = () => {
                   opacity: 0,
                   width: "100%",
                   height: "100%",
-                  cursor: "pointer",
+                  cursor: `${isDailyLimitReached ? 'default' : 'pointer'}`,
                 }}
                 disabled={isDailyLimitReached}
                 onChange={handleFile}
               />
               <div
                 className={classes.uploadResumeBlock}
+                style={{
+                  backgroundColor: `${isDailyLimitReached ? "rgb(110 127 207)" : "rgb(39 69 209)"}`,
+                  cursor: `${isDailyLimitReached ? 'default' : 'pointer'}`
+                }}
               >
                 <FontAwesomeIcon icon={faFileUpload} /> &nbsp;&nbsp;UPLOAD RESUME
               </div>
@@ -772,6 +780,7 @@ const Demo = () => {
                     alert("please select a profile to proceed.")
                     setBorderColor("red")
                   } else {
+                    setGPT([])
                     setPromptText(promptMapping[3] + selectedProfile + promptMapping[4]);
                     setKeyWord("Show me the roadmap to become" + ". " + requestText)
                   }
@@ -781,7 +790,8 @@ const Demo = () => {
                 <button
                   className={classes.selectProfileButton}
                   style={{
-                    borderColor: borderColor
+                    borderColor: borderColor,
+                    color: `${isDisable || isDailyLimitReached || isLoading ? "gray" : "#000"}`
                   }}
                   disabled={isDisable || isDailyLimitReached}
                   onClick={(e) => {
@@ -812,6 +822,7 @@ const Demo = () => {
                   disabled={isDisable || isDailyLimitReached || isLoading}
                   value={promptMapping[index]}
                   onClick={() => {
+                    setGPT([])
                     setPromptText(promptMapping[index]);
                     setKeyWord(promptMapping[index] + ". " + requestText);
                   }}
