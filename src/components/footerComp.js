@@ -44,7 +44,7 @@ const FooterComp = () => {
                     fontSize: 16,
                     marginTop: 20
                 }}>
-                    plopso@gmail.com
+                    info.plopso@gmail.com
                 </div>
                 <div style={{
                     fontSize: 14,
