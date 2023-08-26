@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import LogoutComp from '../components/LogoutComp';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { options, promptMapping } from '../data/options';
+import { options } from '../data/options';
 import { pdfjs } from "react-pdf";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleInfo, faCopy, faFileUpload, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -342,6 +342,8 @@ const useStyles = makeStyles((theme) => ({
 const Demo = () => {
   const location = useLocation()
   const navigate = useNavigate()
+  const classes = useStyles();
+  const data = location.state;
   const [file, setFile] = useState(null);
   const [promptText, setPromptText] = useState("");
   const [requestText, setRequesText] = useState("");
@@ -357,8 +359,6 @@ const Demo = () => {
   const [selectedFileName, setSelectedFileName] = useState('');
   const [dots, setDots] = useState('');
   const [selectedProfile, setSelectedProfile] = useState('')
-  const classes = useStyles();
-  const data = location.state;
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [borderColor, setBorderColor] = useState("darkgrey");
   const [showInfo, setShowInfo] = useState(false);
@@ -423,7 +423,8 @@ const Demo = () => {
             data: {
               email: data.data.email,
               resumeText: requestText,
-              queryText: promptText
+              queryIndex: parseInt(promptText),
+              jobProfile: selectedProfile
             }
           }
           try {
@@ -781,7 +782,7 @@ const Demo = () => {
                     setBorderColor("red")
                   } else {
                     setGPT([])
-                    setPromptText(promptMapping[3] + selectedProfile + promptMapping[4]);
+                    setPromptText('3');
                     setKeyWord("Show me the roadmap to become" + ". " + requestText)
                   }
                 }}
@@ -820,11 +821,10 @@ const Demo = () => {
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                   disabled={isDisable || isDailyLimitReached || isLoading}
-                  value={promptMapping[index]}
                   onClick={() => {
                     setGPT([])
-                    setPromptText(promptMapping[index]);
-                    setKeyWord(promptMapping[index] + ". " + requestText);
+                    setPromptText(`${index}`);
+                    setKeyWord(index + ". " + requestText);
                   }}
                 >
                   {val}
