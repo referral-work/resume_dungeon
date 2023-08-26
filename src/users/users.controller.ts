@@ -2,6 +2,7 @@ import { Body, Controller, Post, Req, Res } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
+import { prompts } from 'src/utils/constants';
 const JinaAI = require('jinaai');
 
 @Controller('api/user')
@@ -68,9 +69,16 @@ export class UsersController {
      @Res() res: Response
    ) {
     const resumeText = data.resumeText
-    const queryText = data.queryText
+    const queryIndex = data.queryIndex
     const email = data.email
+    const jobProfile = data.jobProfile
+    let queryText = ''
 
+    if(queryIndex < 3){
+      queryText = prompts[queryIndex]
+    } else {
+      queryText = prompts[3] + jobProfile + prompts[4]
+    }
     let existingIUser = await this.usersService.findUserByEmail(email)
     if(existingIUser == null || existingIUser == undefined) {
       return res.status(404).json({msg: "requesting resource with wrong email"})
