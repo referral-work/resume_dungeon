@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
@@ -61,7 +61,7 @@ export class UsersController {
     return res.status(200).json({maxPromptCount: iuser.currentMaxPromptCount, usedPromptCount: iuser.currentPromptCount, couponCode: iuser.couponCode})
    }
 
-   // validate user
+   // generate text
    @Post('generate')
    async generateTextFromPrompt(
      @Body('data') data: any,
@@ -115,7 +115,7 @@ export class UsersController {
     return res.status(200).json({responseText: output.output, currentPromptCount: existingIUser.currentPromptCount, currentMaxPromptCount: existingIUser.currentMaxPromptCount, couponCode: existingIUser.couponCode})
    }
 
-   // validate user
+   // get user details
    @Post('details')
    async getUserDetails(
      @Body('data') data: any,
@@ -139,5 +139,65 @@ export class UsersController {
     }
     
     return res.status(200).json({currentPromptCount: existingIUser.currentPromptCount, currentMaxPromptCount: existingIUser.currentMaxPromptCount, couponCode: existingIUser.couponCode})
+   }
+
+   // create a new rating
+   @Post('rating')
+   async saveRating(
+     @Body('data') data: any,
+     @Req() req: Request,
+     @Res() res: Response
+   ) {
+    const email = data.email
+    let queryIndex = data.queryIndex
+    const rating = parseInt(data.rating)
+
+    if(queryIndex < 3){
+      queryIndex += 1
+    } else {
+      queryIndex = 1
+    }
+
+    let existingIUser = await this.usersService.findUserByEmail(email)
+    if(existingIUser == null || existingIUser == undefined) {
+      return res.status(404).json({msg: "requesting resource with wrong email"})
+    }
+
+    // check if limit needs to be renewed
+    const isLimitRenewalValid = this.usersService.isLimitRenewalValid(existingIUser)
+
+    if(isLimitRenewalValid) {
+      console.log("renewing limit...")
+      existingIUser.currentPromptCount = 0
+      await this.usersService.updateUser(existingIUser)
+    }
+    await this.usersService.saveRating(email, queryIndex, rating)
+    return res.status(200).json({currentPromptCount: existingIUser.currentPromptCount, currentMaxPromptCount: existingIUser.currentMaxPromptCount, couponCode: existingIUser.couponCode})
+   }
+
+   // get all ratings
+   @Post('rating/all')
+   async getRatings(
+     @Body('data') data: any,
+     @Req() req: Request,
+     @Res() res: Response
+   ) {
+    const email = data.email
+
+    let existingIUser = await this.usersService.findUserByEmail(email)
+    if(existingIUser == null || existingIUser == undefined) {
+      return res.status(404).json({msg: "requesting resource with wrong email"})
+    }
+
+    // check if limit needs to be renewed
+    const isLimitRenewalValid = this.usersService.isLimitRenewalValid(existingIUser)
+
+    if(isLimitRenewalValid) {
+      console.log("renewing limit...")
+      existingIUser.currentPromptCount = 0
+      await this.usersService.updateUser(existingIUser)
+    }
+    const response = await this.usersService.getRatings()
+    return res.status(200).json({ratings: response})
    }
 }

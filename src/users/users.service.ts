@@ -4,13 +4,18 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UPGRADED_MAX_PROMPT_COUNT } from 'src/utils/constants';
 import { ILogs } from './logs.model';
+import { IRatings } from './rating.model';
 
 @Injectable()
 export class UsersService {
+    async getRatings() {
+      return await this.iratingsModel.find({})
+    }
     
     constructor(
         @InjectModel('iuser') private readonly iuserModel: Model<IUser>,
-        @InjectModel('ilogs') private readonly ilogsModel: Model<ILogs>){}
+        @InjectModel('ilogs') private readonly ilogsModel: Model<ILogs>,
+        @InjectModel('iratings') private readonly iratingsModel: Model<IRatings>){}
     
     async isValidCouponCode(coupon_code: string, existingIUser: any): Promise<boolean> {
         const iuser = await this.iuserModel.findOne(
@@ -125,5 +130,15 @@ export class UsersService {
         })
 
         await this.ilogsModel.create(createLog)
+    }
+
+    async saveRating(email: string, prompt: number, rating: number) {
+        const createRating = new this.iratingsModel({
+            email: email,
+            prompt: prompt,
+            rating: rating
+        })
+
+        await this.iratingsModel.create(createRating)
     }
 }
