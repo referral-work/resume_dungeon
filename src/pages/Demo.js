@@ -376,6 +376,7 @@ const Demo = () => {
   const [showInfo, setShowInfo] = useState(false);
   const [copied, setCopied] = useState(false);
   const [recordedFeedback, setRecordedFeedback] = useState(0);
+  const [hasFeedbackSent, setHasFeedbackSent] = useState(false);
 
   const formUrl = 'https://www.plopso.com/#referral-form'
   const homeUrl = "https://www.plopso.com/"
@@ -509,20 +510,23 @@ const Demo = () => {
 
   useEffect(() => {
     if (
-      // resGPT.length > 0 && 
+      resGPT.length > 0 && 
       recordedFeedback > 0) {
-      const reqBody = {
-        data: {
-          rating: recordedFeedback,
-          email: data.data.email,
-          queryIndex: parseInt(promptText),
-        }
-      }
-      axios.post(`/api/user/rating`, JSON.stringify(reqBody), {
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
+        setTimeout(() => {
+          const reqBody = {
+            data: {
+              rating: recordedFeedback,
+              email: data.data.email,
+              queryIndex: parseInt(promptText),
+            }
+          }
+          axios.post(`/api/user/rating`, JSON.stringify(reqBody), {
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          });
+          setHasFeedbackSent(true)
+        }, 1000)
     }
   }, [recordedFeedback])
 
@@ -815,6 +819,7 @@ const Demo = () => {
                   } else {
                     setGPT([])
                     setRecordedFeedback(0)
+                    setHasFeedbackSent(false)
                     setPromptText('3');
                     setKeyWord("Show me the roadmap to become" + ". " + requestText)
                   }
@@ -857,6 +862,7 @@ const Demo = () => {
                   onClick={() => {
                     setGPT([])
                     setRecordedFeedback(0)
+                    setHasFeedbackSent(false)
                     setPromptText(`${index}`);
                     setKeyWord(index + ". " + requestText);
                   }}
@@ -900,8 +906,8 @@ const Demo = () => {
                     <div style={{ marginTop: 10, lineHeight: 1.3 }} key={index}>{line}</div>
                   ))}
                 </div>
-                {resGPT.length > 0 && recordedFeedback === 0 && <Rating recordedFeedback={recordedFeedback} setRecordedFeedback={setRecordedFeedback} />}
-                {resGPT.length > 0 && recordedFeedback > 0 &&
+                {resGPT.length > 0 && hasFeedbackSent === false && <Rating recordedFeedback={recordedFeedback} setRecordedFeedback={setRecordedFeedback} />}
+                {resGPT.length > 0 && hasFeedbackSent === true &&
                   <div className={classes.feedbackSent}>
                     your feedback is recorded! <FontAwesomeIcon icon={faCheck} />
                   </div>
@@ -914,6 +920,7 @@ const Demo = () => {
           onClick={() => {
             setGPT([])
             setRecordedFeedback(0)
+            setHasFeedbackSent(false)
             window.scrollTo(0, 0)
           }}
         >
