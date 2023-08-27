@@ -153,7 +153,7 @@ export class UsersController {
     const rating = parseInt(data.rating)
 
     if(queryIndex < 3){
-      queryIndex += 1
+      queryIndex += 2
     } else {
       queryIndex = 1
     }
