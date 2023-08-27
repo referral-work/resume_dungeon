@@ -5,13 +5,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { options } from '../data/options';
 import { pdfjs } from "react-pdf";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleInfo, faCopy, faFileUpload, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faCircleInfo, faCopy, faFileUpload, faUser } from '@fortawesome/free-solid-svg-icons';
 import { makeStyles } from '@material-ui/core';
 import JobProfilePopup from '../components/JobProfilePopupComp';
 import FooterComp from '../components/footerComp';
 import PizZip from "pizzip";
 import { DOMParser } from "@xmldom/xmldom";
 import { jobProfiles } from '../data/job_profiles';
+import Rating from '../components/Rating';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -335,7 +336,18 @@ const useStyles = makeStyles((theme) => ({
       fontSize: 14,
       padding: 10,
       borderRadius: 10
-    }
+    },
+  },
+  feedbackSent: {
+    fontSize: 12,
+    borderRadius: 20,
+    padding: 10,
+    backgroundColor: '#29272742',
+    width: 'fit-content',
+    marginLeft: 'auto',
+    marginRight: 10,
+    marginBottom: 10,
+    color: 'green'
   }
 }));
 
@@ -363,6 +375,7 @@ const Demo = () => {
   const [borderColor, setBorderColor] = useState("darkgrey");
   const [showInfo, setShowInfo] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [recordedFeedback, setRecordedFeedback] = useState(0);
 
   const formUrl = 'https://www.plopso.com/#referral-form'
   const homeUrl = "https://www.plopso.com/"
@@ -461,12 +474,13 @@ const Demo = () => {
   }, [keyword]);
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setDots((prevDots) => (prevDots.length < 3 ? prevDots + '.' : ''));
-    }, 500);
-
-    return () => clearInterval(intervalId);
-  }, []);
+    if (isLoading) {
+      const intervalId = setInterval(() => {
+        setDots((prevDots) => (prevDots.length < 3 ? prevDots + '.' : ''));
+      }, 500);
+      return () => clearInterval(intervalId);
+    }
+  }, [isLoading]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -492,6 +506,25 @@ const Demo = () => {
       });
     }
   }, [isLoading])
+
+  useEffect(() => {
+    if (
+      // resGPT.length > 0 && 
+      recordedFeedback > 0) {
+      const reqBody = {
+        data: {
+          rating: recordedFeedback,
+          email: data.data.email,
+          queryIndex: parseInt(promptText),
+        }
+      }
+      axios.post(`/api/user/rating`, JSON.stringify(reqBody), {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+    }
+  }, [recordedFeedback])
 
   const extractTextFromPDF = async (content) => {
     try {
@@ -609,7 +642,6 @@ const Demo = () => {
       e.target.style.color = "#000";
     }
   };
-
   return (
     <div>
       <main
@@ -782,6 +814,7 @@ const Demo = () => {
                     setBorderColor("red")
                   } else {
                     setGPT([])
+                    setRecordedFeedback(0)
                     setPromptText('3');
                     setKeyWord("Show me the roadmap to become" + ". " + requestText)
                   }
@@ -823,6 +856,7 @@ const Demo = () => {
                   disabled={isDisable || isDailyLimitReached || isLoading}
                   onClick={() => {
                     setGPT([])
+                    setRecordedFeedback(0)
                     setPromptText(`${index}`);
                     setKeyWord(index + ". " + requestText);
                   }}
@@ -866,6 +900,12 @@ const Demo = () => {
                     <div style={{ marginTop: 10, lineHeight: 1.3 }} key={index}>{line}</div>
                   ))}
                 </div>
+                {resGPT.length > 0 && recordedFeedback === 0 && <Rating recordedFeedback={recordedFeedback} setRecordedFeedback={setRecordedFeedback} />}
+                {resGPT.length > 0 && recordedFeedback > 0 &&
+                  <div className={classes.feedbackSent}>
+                    your feedback is recorded! <FontAwesomeIcon icon={faCheck} />
+                  </div>
+                }
               </div>
             </div>
           )}
@@ -873,6 +913,7 @@ const Demo = () => {
           className={classes.tryAnotherPrompt}
           onClick={() => {
             setGPT([])
+            setRecordedFeedback(0)
             window.scrollTo(0, 0)
           }}
         >

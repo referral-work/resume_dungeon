@@ -20,13 +20,6 @@ const ValidateComp = () => {
         googleLogout()
         navigate(`/login`, { state: {data: {isError: true, prevCouponCode: coupon}}});
     }
-    
-    // useGoogleLogout({
-    //     clientId,
-    //     onLogoutSuccess: () => {
-    //         navigate(`/login`, { state: {data: {isError: true, prevCouponCode: coupon}}});
-    //     },
-    //   });
 
     useEffect(() => {
         async function fetchIP() {
